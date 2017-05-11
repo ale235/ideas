@@ -184,9 +184,9 @@ class ReportesController extends Controller
         if ($request->get('daterange') == null || $request->get('daterange') == '') {
             $venta = DB::table('venta')
                 ->orderBy('fecha_hora','desc')
+                ->paginate(30);
 //            ->select('fecha_hora', DB::raw('sum(total_venta) as total_venta'))
-//                ->whereBetween('fecha_hora',[$pieces[0],$pieces[1]])
-                ->get();
+//                ->whereBetween('fecha_hora',[$pieces[0],$pieces[1]]);
         }else{
             $date = $request->get('daterange');
             $pieces = explode(" - ", $date);
@@ -195,7 +195,7 @@ class ReportesController extends Controller
 //            ->select('fecha_hora', DB::raw('sum(total_venta) as total_venta'))
                 ->whereBetween('fecha_hora',[$pieces[0],$pieces[1]])
                 ->orderBy('fecha_hora','desc')
-                ->get();
+                ->paginate(30);
         }
 //        var_dump($request->get('daterange'));
 
@@ -204,7 +204,7 @@ class ReportesController extends Controller
         $stock = DB::table('articulo')
             ->where('stock','<','0')
             ->where('estado','=','Activo')
-            ->get();
+            ->paginate(30);
 
 
         if($request->is('reportes/grafico/detallestock'))

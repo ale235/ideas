@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ADVentas | www.incanatoit.com</title>
+    <title>Ideas más bonitas | www.ideasmasbonitas.com</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.5 -->
@@ -54,25 +54,25 @@
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <small class="bg-red">Online</small>
-                            <span class="hidden-xs">Alejandro Colautti</span>
+                            <span class="hidden-xs">{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu">
+                            <a href="{{url('/logout')}}" class="btn btn-default btn-flat pull-right">Cerrar</a>
                             <!-- User image -->
-                            <li class="user-header">
+                            {{--<li class="user-header">--}}
 
-                                <p>
+                                {{--<p>--}}
                                     {{--www.incanatoit.com - Desarrollando Software--}}
                                     {{--<small>www.youtube.com/jcarlosad7</small>--}}
-                                </p>
-                            </li>
+                                {{--</p>--}}
+                            {{--</li>--}}
 
-                            <!-- Menu Footer-->
-                            <li class="user-footer">
-
-                                <div class="pull-right">
-                                    <a href="{{url('/logout')}}" class="btn btn-default btn-flat">Cerrar</a>
-                                </div>
-                            </li>
+                            {{--<!-- Menu Footer-->--}}
+                            {{--<li class="user-footer">--}}
+                                {{--<div class="pull-right">--}}
+                                    {{----}}
+                                {{--</div>--}}
+                            {{--</li>--}}
                         </ul>
                     </li>
 

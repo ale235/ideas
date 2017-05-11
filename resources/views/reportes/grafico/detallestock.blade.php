@@ -27,6 +27,7 @@
                         </tbody>
                     </table>
                 </div>
+        {!! $stock->render() !!}
     </div>
 @endsection
 @push('scripts')
