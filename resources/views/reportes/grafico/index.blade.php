@@ -4,29 +4,6 @@
     <head>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript">
-
-
-
-//            google.charts.setOnLoadCallback(drawChart);
-
-            {{--function drawChart() {--}}
-
-                {{--var data = google.visualization.arrayToDataTable([--}}
-                    {{--['Proveedores', 'Cantidad de Artículos'],--}}
-                  {{--@foreach($proveedores as $prov)--}}
-                    {{--['{{$prov->proveedor}}',{{$prov->total}}],--}}
-                  {{--@endforeach--}}
-                {{--]);--}}
-
-                {{--var options = {--}}
-                    {{--title: 'Cantidad de Artículos vendidos por cada proveedor'--}}
-                {{--};--}}
-
-                {{--var chart = new google.visualization.PieChart(document.getElementById('piechart'));--}}
-
-                {{--chart.draw(data, options);--}}
-            {{--}--}}
-
         </script>
     </head>
     <body>
