@@ -200,16 +200,16 @@ class ReportesController extends Controller
 //        var_dump($request->get('daterange'));
 
 
-
+        $query = trim($request->get('searchText'));
         $stock = DB::table('articulo')
-            ->where('stock','<','0')
+            ->where('stock','<=','0')
+            ->where('codigo','LIKE','%'.$query.'%')
             ->where('estado','=','Activo')
             ->paginate(30);
 
 
         if($request->is('reportes/grafico/detallestock'))
-
-        return view('reportes.grafico.detallestock', ['stock'=> $stock]);
+        return view('reportes.grafico.detallestock', ['stock'=> $stock,'searchText'=>$query]);
         else    return view('reportes.grafico.detalleganancias', ['venta'=> $venta]);
         //return view('home');
     }
