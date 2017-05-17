@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use ideas\Http\Requests\ArticuloFormRequest;
 use ideas\Articulo;
+use ideas\Ingreso;
+use ideas\DetalleIngreso;
 use ideas\Precio;
+use Carbon\Carbon;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -72,6 +75,9 @@ class ArticuloController extends Controller
 
     public function store(ArticuloFormRequest $request)
     {
+        try
+        {
+            DB::beginTransaction();
         $articulo = new Articulo;
         $articulo->idcategoria = $request->get('idcategoria');
         $articulo->codigo = $request->get('idproveedores') . $request->get('codigo');
@@ -88,7 +94,53 @@ class ArticuloController extends Controller
             $articulo->imagen = $file->getClientOriginalName();
         }
         $articulo->save();
-        return Redirect::to('almacen/articulo?selectText=Activo');
+
+        $ingreso = new Ingreso;
+//            $pieces = explode("+", $request->get('idproveedor'));
+//            $ingreso->idproveedor = $pieces[0];
+        $ingreso->idproveedor = $request->get('idproveedorsolo');
+        $mytime= Carbon::now('America/Argentina/Buenos_Aires');
+
+        $ingreso->fecha_hora=$mytime->toDateTimeString();
+        $ingreso->estado='Activo';
+        $ingreso->save();
+
+        $idarticulo = $articulo->idarticulo;
+        $cantidad = $request->get('pcantidad');
+        $precio_compra_costo = $request->get('pprecio_compra_costo');
+        $porcentaje_venta = $request->get('pporcentaje_venta');
+
+        $detalle = new DetalleIngreso();
+        $detalle->idingreso = $ingreso->idingreso;
+        $detalle->idarticulo = $idarticulo;
+        $detalle->cantidad = $cantidad;
+        $detalle->precio_compra_costo = $precio_compra_costo;
+        $detalle->porcentaje_venta = $porcentaje_venta;
+        $detalle->save();
+
+        $precio = new Precio();
+        $precio->idarticulo = $idarticulo;
+        $precio->porcentaje = $porcentaje_venta;
+        $precio->fecha = $mytime->toDateTimeString();
+        $precio->precio_compra = $precio_compra_costo;
+        $precio->precio_venta = (($porcentaje_venta / 100) + 1) * $precio_compra_costo;
+        $precio->save();
+
+        $articulo = Articulo::findOrFail($idarticulo);
+        $articulo->ultimoprecio = (($porcentaje_venta / 100) + 1) * $precio_compra_costo;
+        $articulo->stock = $articulo->stock + $cantidad;
+        $articulo->update();
+
+        DB::commit();
+        }
+        catch(\Exception $e)
+        {
+            DB::rollback();
+        }
+
+
+
+            return Redirect::to('almacen/articulo?selectText=Activo');
     }
 
     public function show($id)
@@ -218,6 +270,14 @@ class ArticuloController extends Controller
             });
 
         })->export('xls');
+    }
+
+    public function buscarProveedor(Request $request){
+
+        //it will get price if its id match with product id
+        //$p=Product::select('price')->where('id',$request->id)->first();
+        $p=DB::table('persona as p')->select('p.idpersona')->where('p.codigo','=', $request->codigo)->get();
+        return response()->json($p);
     }
 
 // ->orderBy('p.idprecio','desc')

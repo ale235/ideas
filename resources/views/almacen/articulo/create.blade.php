@@ -52,6 +52,7 @@
                         <option value="{{$prov->codigo}}">{{$prov->codigo}}</option>
                     @endforeach
                 </select>
+                <input type="hidden" name="idproveedorsolo" id="idproveedorsolo" value="{{old('idproveedorsolo')}}">
             {{--</div>--}}
         </div>
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
@@ -66,18 +67,32 @@
             {{--</div>--}}
         </div>
     </div>
+    <hr size="20" />
+
     <div class="row">
-        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
-            {{--<div class="from-group">--}}
-            <label for="imagen">Imagen</label>
-            <input type="file" name="imagen" class="form-control">
-            {{--</div>--}}
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            <div class="form-group">
+                <label for="cantidad">Cantidad</label>
+                <input type="number" name="pcantidad" id="pcantidad" class="form-control" onkeyup="actualizar()" placeholder="Cantidad">
+            </div>
         </div>
-        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
-            {{--<div class="from-group">--}}
-                <label for="descripcion">Descripción</label>
-                <input type="text" name="descripcion" value="{{old('descripcion')}}" class="form-control" placeholder="Descripcion del artículo...">
-            {{--</div>--}}
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            <div class="form-group">
+                <label for="precio_compra_costo">Precio de Compra</label>
+                <input type="number" name="pprecio_compra_costo" id="pprecio_compra_costo" class="form-control" onkeyup="actualizar()" placeholder="Precio de Compra">
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            <div class="form-group">
+                <label for="porcentaje_venta">Porcentaje de venta</label>
+                <input type="number" name="pporcentaje_venta" id="pporcentaje_venta" class="form-control" onkeypress="return valida(event)" onkeyup="actualizar()" placeholder="Porcentaje de Venta">
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            <div class="form-group">
+                <label for="precio_venta">Precio de venta Esperado</label>
+                <input type="number" name="pprecio_venta_esperado" id="pprecio_venta_esperado" class="form-control">
+            </div>
         </div>
     </div>
     <div class="row">
@@ -100,6 +115,24 @@
         $('#idproveedores').click(function () {
             agregarprov();
         })
+        $(document).on('change','#idproveedores',function(){
+            // console.log("hmm its change");
+
+            var cat_id=$(this).val();
+
+            $.ajax({
+                type:'get',
+                url:'{!!URL::to('buscarProveedor')!!}',
+                data:{'codigo':cat_id},
+                success:function(data){
+                    $('#idproveedorsolo').val(data[0].idpersona);
+
+                },
+                error:function(){
+
+                }
+            });
+        });
     });
 
 function agregarprov() {

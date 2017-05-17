@@ -60,28 +60,6 @@
                 <input type="text" name="codigo" required value="{{$articulo->codigo}}" class="form-control">
         </div>
         <div class="row">
-            <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
-            <label for="imagen">Imagen</label>
-            <input type="file" name="imagen" class="form-control">
-            @if (($articulo->imagen) != '')
-            <img src="{{asset('imagenes/articulos/'.$articulo->imagen)}}" height="300px" width="300px">
-            @endif
-            </div>
-            <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
-                <label for="descripcion">Descripcion</label>
-                <input type="text" name="descripcion" value="{{$articulo->descripcion}}" class="form-control" placeholder="Descripcion del artículo...">
-            </div>
-        </div>
-        {{--<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">--}}
-            {{--<div class="from-group">--}}
-                {{--<label for="imagen">Imagen</label>--}}
-                {{--<input type="file" name="imagen" class="form-control">--}}
-                {{--@if (($articulo->imagen) != '')--}}
-                    {{--<img src="{{asset('imagenes/articulos/'.$articulo->imagen)}}" height="300px" width="300px">--}}
-                {{--@endif--}}
-            {{--</div>--}}
-        {{--</div>--}}
-        <div class="row">
         <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
             <div class="form-group">
                 <button class="btn btn-primary" type="submit">Guardar</button>
