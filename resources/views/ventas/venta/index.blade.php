@@ -5,7 +5,7 @@
         <h3>
             Listado de Ventas
         </h3>
-        <a href="venta/create"><button class="btn btn-success pull-left">Nueva Venta</button></a>
+        {{--<a href="venta/create"><button class="btn btn-success pull-left">Nueva Venta</button></a>--}}
         @if (Auth::user()->role == 1)
         <a href="{{URL::action('VentaController@exportResultado',$date)}}"><button class="btn btn-success pull-right">Exportar Resultado <i class="fa fa-file-excel-o"></i></button></a>
         <a href="{{URL::action('VentaController@exportDetalle',$date)}}"><button class="btn btn-success pull-right">Exportar Resultado con Detalle<i class="fa fa-file-excel-o"></i></button></a>

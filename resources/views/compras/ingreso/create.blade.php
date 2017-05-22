@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <h3>
-                Nuevo Ingreso
+                Nuevo Ingreso por Proveedor
             </h3>
             @if(count($errors)>0)
             <div class="alert alert-danger">
@@ -117,8 +117,8 @@
                 </div>
                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
                     <div class="form-group">
-                        <label for="precio_compra_costo">Precio de Compra</label>
-                        <input type="number" name="pprecio_compra_costo" id="pprecio_compra_costo" class="form-control" onkeyup="actualizar()" placeholder="Precio de Compra">
+                        <label for="precio_compra_costo">Costo</label>
+                        <input type="number" name="pprecio_compra_costo" id="pprecio_compra_costo" class="form-control" onkeyup="actualizar()" placeholder="Costo">
                     </div>
                 </div>
                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">

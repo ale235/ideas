@@ -22,7 +22,11 @@ class PrecioController extends Controller
 
     public function index(Request $request)
     {
-        $proveedores=DB::table('persona')->where('tipo_persona','=','Proveedor')->get();
+        $proveedores=DB::table('persona')
+            ->where('tipo_persona','=','Proveedor')
+            ->where('estado','=','Activo')
+            ->orderBy('codigo','asc')
+            ->get();
 
         return view('precios.actualizar.index',['proveedores'=>$proveedores]);
     }
@@ -44,7 +48,7 @@ class PrecioController extends Controller
 //            $precio->save();
             if($request->get('pidarticulo') != null && $request->get('pidarticulo') != ''){
                 $idarticulo = $request->get('pidarticulo');
-                $porcentaje = $request->get('pporcentaje_venta');
+                $porcentaje = $request->get('nuevo_porcentaje1');
                 $mytime= Carbon::now('America/Argentina/Buenos_Aires');
 
                 $ultimoprecio = DB::table('precio')
@@ -151,7 +155,6 @@ class PrecioController extends Controller
         //if our chosen id and products table prod_cat_id col match the get first 100 data
         //$request->id here is the id of our chosen option id
         $data= DB::table('precio as p')
-            ->select('p.porcentaje')
             ->where('p.idarticulo','=',$request->id)
             ->orderBy('idarticulo','desc')
             ->orderBy('idprecio','desc')
