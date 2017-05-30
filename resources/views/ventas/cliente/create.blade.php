@@ -28,12 +28,6 @@
         </div>
         <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
             <div class="from-group">
-                <label for="codigo">Codigo</label>
-                <input type="text" name="codigo" value="{{old('codigo')}}" class="form-control" placeholder="Código del Proveedor...">
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-            <div class="from-group">
                 <label for="telefono">Teléfono</label>
                 <input type="text" name="telefono" value="{{old('telefono')}}" class="form-control" placeholder="Teléfono...">
             </div>
@@ -42,14 +36,6 @@
             <div class="from-group">
                 <label for="direccion">Direccion</label>
                 <input type="text" name="direccion" value="{{old('direccion')}}" class="form-control" placeholder="Direccion...">
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-            <div class="form-group">
-                <label>Documento</label>
-                <select name="tipo_documento" class="form-control">
-                    <option value="DNI">DNI</option>
-                </select>
             </div>
         </div>
         <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">

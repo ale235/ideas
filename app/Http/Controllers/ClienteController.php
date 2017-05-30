@@ -48,6 +48,8 @@ class ClienteController extends Controller
         $persona->direccion = $request->get('direccion');
         $persona->telefono = $request->get('telefono');
         $persona->email = $request->get('email');
+        $persona->facebook = $request->get('facebook');
+        $persona->instagram = $request->get('instagram');
         $persona->save();
         return Redirect::to('ventas/cliente');
     }
@@ -71,6 +73,8 @@ class ClienteController extends Controller
         $persona->direccion = $request->get('direccion');
         $persona->telefono = $request->get('telefono');
         $persona->email = $request->get('email');
+        $persona->facebook = $request->get('facebook');
+        $persona->instagram = $request->get('instagram');
         $persona->update();
         return Redirect::to('ventas/cliente');
     }

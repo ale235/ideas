@@ -18,7 +18,7 @@
         </div>
     </div>
             {{--// el idcategoria es porque en categoriacontroller el metodo update recibe un id.--}}
-            {!! Form::model($persona, ['method'=>'PATCH','route'=>['cliente.update',$persona->idarticulo]])!!}
+            {!! Form::model($persona, ['method'=>'PATCH','route'=>['cliente.update',$persona->idpersona]])!!}
             {{Form::token()}}
      <div class="row">
          <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
@@ -31,14 +31,6 @@
              <div class="from-group">
                  <label for="direccion">Direccion</label>
                  <input type="text" name="direccion" value="{{$persona->direccion}}" class="form-control" placeholder="Direccion...">
-             </div>
-         </div>
-         <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
-             <div class="form-group">
-                 <label>Documento</label>
-                 <select name="tipo_documento" selected class="form-control">
-                     <option value="DNI">DNI</option>
-                 </select>
              </div>
          </div>
          <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
@@ -57,6 +49,18 @@
              <div class="from-group">
                  <label for="email">E-mail</label>
                  <input type="text" name="email" value="{{$persona->email}}" class="form-control" placeholder="E-mail...">
+             </div>
+         </div>
+         <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+             <div class="from-group">
+                 <label for="instagram">Instagram</label>
+                 <input type="text" name="instagram" value="{{$persona->instagram}}" class="form-control" placeholder="Instagram...">
+             </div>
+         </div>
+         <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+             <div class="from-group">
+                 <label for="facebook">Facebook</label>
+                 <input type="text" name="facebook" value="{{$persona->facebook}}" class="form-control" placeholder="Facebook">
              </div>
          </div>
          <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">

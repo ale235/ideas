@@ -66,7 +66,9 @@ class ArticuloController extends Controller
 
 
         $proveedores = DB::table('persona')
-            ->where('tipo_persona','=','Proveedor')->get();
+            ->where('tipo_persona','=','Proveedor')
+            ->where('estado','=','Activo')
+            ->get();
         $categorias=DB::table('categoria')
             ->where('condicion','=','1')
             ->get();

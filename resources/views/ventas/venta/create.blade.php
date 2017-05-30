@@ -17,7 +17,7 @@
             @endif
         </div>
     </div>
-            {!! Form::open(array('url'=>'ventas/venta', 'method'=>'POST', 'autocomplete'=>'off'))!!}
+            {!! Form::open(array('url'=>'ventas/venta', 'method'=>'POST', 'autocomplete'=>'off', 'id'=>'myForm'))!!}
             {{Form::token()}}
     <div class="row">
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
@@ -121,9 +121,9 @@
             </table>
         </div>
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
-            <div class="from-group">
+            <div class="from-group" id="elcliente">
                 <label for="proveedor">Cliente</label>
-                <select name="idcliente" id="idcliente" class="lista-clientes form-control">
+                <select name="idcliente" id="idcliente" class="lista-clientes form-control selectpicker"  data-live-search="true">
                     @foreach($personas as $persona)
                         @if($loop->index == 0){
                         <option selected="true" value="{{$persona->idpersona}}">{{$persona->nombre}}</option>
@@ -141,6 +141,63 @@
                        placeholder="Venta Real">
             </div>
         </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
+            <div class="from-group">
+                <div class="checkbox">
+                    <label><input type="checkbox" id="checkCliente" name="checkCliente" value="false">Agregar cliente</label>
+                </div>
+            </div>
+        </div>
+        <div id="checkClienteInputs">
+            <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <div class="from-group">
+                <div class="row">
+                    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+                        <div class="from-group">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id='nombreCliente' name="nombre" class="form-control" placeholder="Nombre...">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+                        <div class="from-group">
+                            <label for="telefono">Teléfono</label>
+                            <input type="text" name="telefono" class="form-control" placeholder="Teléfono...">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+                        <div class="from-group">
+                            <label for="direccion">Dirección</label>
+                            <input type="text" name="direccion" class="form-control" placeholder="Direccion...">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+                        <div class="from-group">
+                            <label for="num_documento">Numero de Documento</label>
+                            <input type="text" name="num_documento" class="form-control" placeholder="Número de documento...">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+                        <div class="from-group">
+                            <label for="facebook">Facebook</label>
+                            <input type="text" name="facebook" class="form-control" placeholder="Facebook...">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+                        <div class="from-group">
+                            <label for="instagram">Instagram</label>
+                            <input type="text" name="instagram" class="form-control" placeholder="Instagram...">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+                        <div class="from-group">
+                            <label for="email">E-mail</label>
+                            <input type="text" name="email" class="form-control" placeholder="E-mail...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
         <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12" id="guardar">
             <div class="form-group">
                 <input name="_token" value="{{csrf_token()}}" type="hidden">
@@ -153,6 +210,28 @@
             {!! Form::close()!!}
 @push ('scripts')
 <script>
+
+    var form = $('#myForm'),
+        checkbox = $('#checkCliente'),
+        chShipBlock = $('#checkClienteInputs');
+        inputCliente = $('#elcliente');
+        nombreCliente = $('#nombreCliente');
+    chShipBlock.hide();
+
+    checkbox.on('click', function() {
+        if($(this).is(':checked')) {
+            chShipBlock.show();
+            nombreCliente.attr('required', true);
+            inputCliente.hide();
+            checkbox.attr('value','true');
+        } else {
+            chShipBlock.hide();
+            nombreCliente.attr('required', false);
+            inputCliente.show();
+            checkbox.attr('value','false');
+        }
+    });
+
     $(document).ready(function () {
        $('#bt_add').click(function () {
            agregar();

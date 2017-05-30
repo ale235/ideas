@@ -109,6 +109,7 @@
 
 @push ('scripts')
 <script>
+    var art = {!! json_encode($articulos->toArray()) !!};
     var casa = '<?php echo $articulos ?>';
     $(document).ready(function () {
         articulo = $('#idproveedores option:selected').text();
@@ -132,6 +133,17 @@
 
                 }
             });
+        });
+
+        $(document).on('change','#codigo',function(){
+            var cod = $('#idproveedores').val()+$('#codigo').val();
+           for(var i = 0; i<art.length;i++){
+               if(art[i].codigo == cod){
+                   alert('El código ya existe');
+                   $('#codigo').val(' ');
+               }
+           }
+
         });
     });
 

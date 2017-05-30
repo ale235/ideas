@@ -26,8 +26,8 @@ class PersonaFormRequest extends FormRequest
         return [
 
             'nombre'=>'required|max:100',
-            'tipo_documento'=>'required|max:20',
-            'codigo'=>'required|max:20',
+            'tipo_documento'=>'max:20',
+            'codigo'=>'max:20',
             'num_documento'=>'max:15',
             'direccion'=>'max:70',
             'telefono'=>'max:15',
