@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use ideas\Http\Requests\PersonaFormRequest;
 use Carbon\Carbon;
 use ideas\DetalleVenta;
+use Maatwebsite\Excel\Facades\Excel;
 
 use DB;
 
@@ -32,7 +33,16 @@ class ReportesController extends Controller
             ->groupBy('fecha_hora')
             ->get();
 
-        return view('reportes.grafico.index', ['proveedores'=> $proveedores,'articulos'=>$articulos, 'venta'=> $venta]);
+        $mytime= Carbon::now('America/Argentina/Buenos_Aires');
+
+        $detalle_venta_hoy = DB::table('detalle_venta as dv')
+            ->join('venta as v','dv.idventa','=','v.idventa')
+            ->whereDay('v.fecha_hora',$mytime->day)
+            ->whereMonth('v.fecha_hora',$mytime->month)
+            ->whereYear('v.fecha_hora',$mytime->year)
+            ->get();
+
+        return view('reportes.grafico.index', ['proveedores'=> $proveedores,'articulos'=>$articulos, 'detalle_venta_hoy'=> $detalle_venta_hoy]);
         //return view('home');
     }
 
@@ -109,6 +119,49 @@ class ReportesController extends Controller
         return $collection;
     }
 
+    public function exportVentasPorProducto()
+    {
+
+        $collection = DB::table('detalle_venta as v')
+            ->join('articulo as a','a.idarticulo','=','v.idarticulo')
+            ->select('a.nombre',DB::raw('SUM(v.cantidad) as cantidadTotal'))
+            ->where('a.estado','=','Activo')
+            ->groupBy('a.nombre')
+            ->orderBy('cantidadTotal','desc')
+//            ->orderBy('desc')
+            ->limit(10)
+            ->get();
+
+        $columna = [];
+        $cont2 = 1;
+        $fila0 = [];
+        $fila0[0] = 'Nombre';
+        $fila0[1] = 'Cantidad Total';
+
+        $columna[0] = $fila0;
+
+        foreach ($collection as $a) {
+            $fila = [];
+
+            $fila[0] = $a->nombre;
+            $fila[1] = $a->cantidadTotal;
+            $columna[$cont2] = $fila;
+            $cont2 = $cont2 + 1;
+        }
+
+        Excel::create('Laravel Excel', function ($excel) use ($columna) {
+
+            $excel->sheet('Excel sheet', function ($sheet) use ($columna) {
+
+                $sheet->fromArray($columna);
+
+            });
+
+        })->download('xls');
+
+//        return $collection;
+    }
+
     public function ventasPorProductos()
     {
 
@@ -140,6 +193,49 @@ class ReportesController extends Controller
             ->get();
 
         return $collection;
+    }
+
+    public function exportProveedorQueMasProductosVende()
+    {
+
+        $collection = DB::table('detalle_venta as v')
+            ->join('articulo as a','a.idarticulo','=','v.idarticulo')
+            ->join('persona as p','a.proveedor','=','p.codigo')
+            ->select('a.proveedor',DB::raw('SUM(v.cantidad) as cantidadTotal'))
+            ->where('p.estado','=','Activo')
+            ->groupBy('a.proveedor')
+            ->orderBy('cantidadTotal','desc')
+//            ->orderBy('desc')
+            ->limit(10)
+            ->get();
+
+        $columna = [];
+        $cont2 = 1;
+        $fila0 = [];
+        $fila0[0] = 'Proveedor';
+        $fila0[1] = 'Cantidad Total';
+
+        $columna[0] = $fila0;
+
+        foreach ($collection as $a) {
+            $fila = [];
+
+            $fila[0] = $a->proveedor;
+            $fila[1] = $a->cantidadTotal;
+            $columna[$cont2] = $fila;
+            $cont2 = $cont2 + 1;
+        }
+
+        Excel::create('Laravel Excel', function ($excel) use ($columna) {
+
+            $excel->sheet('Excel sheet', function ($sheet) use ($columna) {
+
+                $sheet->fromArray($columna);
+
+            });
+
+        })->download('xls');
+
     }
 
     public function ganancias(){

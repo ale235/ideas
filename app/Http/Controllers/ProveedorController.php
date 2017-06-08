@@ -88,16 +88,16 @@ class ProveedorController extends Controller
         return Redirect::to('compras/proveedor');
     }
 
-    public function destroy($id)
-    {
-        $persona = Persona::findOrFail($id);
-
-        if($persona->estado ==  'Inactivo')
-            $persona->estado = 'Activo';
-        else $persona->estado = 'Inactivo';
-        $persona->update();
-        return Redirect::to('compras/proveedor');
-    }
+//    public function destroy($id)
+//    {
+//        $persona = Persona::findOrFail($id);
+//
+//        if($persona->estado ==  'Inactivo')
+//            $persona->estado = 'Activo';
+//        else $persona->estado = 'Inactivo';
+//        $persona->update();
+//        return Redirect::to('compras/proveedor');
+//    }
 
     public function cambiarEstado($id){
 

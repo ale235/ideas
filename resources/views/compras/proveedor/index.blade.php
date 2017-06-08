@@ -38,7 +38,7 @@
                             <td>
                                 <a href="{{URL::action('ProveedorController@edit',$per->idpersona)}}"><button class="btn btn-info">Editar</button></a>
                                 <a href="{{URL::action('ProveedorController@cambiarEstado',$per->idpersona)}}"><button class="btn btn-warning">Cambiar estado</button></a>
-                                <a href="" data-target="#modal-delete-{{$per->idpersona}}" data-toggle="modal"><button class="btn btn-danger">Eliminar</button></a>
+                                {{--<a href="" data-target="#modal-delete-{{$per->idpersona}}" data-toggle="modal"><button class="btn btn-danger">Eliminar</button></a>--}}
                             </td>
                         </tr>
                         @include('compras.proveedor.modal')

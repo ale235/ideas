@@ -55,11 +55,11 @@ class VentaController extends Controller
                 $ventas = DB::table('venta as v')
                     ->join('persona as p', 'v.idcliente', '=', 'p.idpersona')
                     ->join('detalle_venta as dv', 'v.idventa', '=', 'dv.idventa')
-                    ->select('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta')
+                    ->select('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta','v.total_venta_real')
 //                ->where('v.num_comprobante', 'LIKE', '%'.$query.'%')
                     ->whereBetween('v.fecha_hora', array(new Carbon($pieces[0]), new Carbon($pieces[1])))
                     ->orderBy('v.idventa', 'desc')
-                    ->groupBy('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta')
+                    ->groupBy('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta','v.total_venta_real')
                     ->paginate(20);
             }
 //            echo $pieces[0];

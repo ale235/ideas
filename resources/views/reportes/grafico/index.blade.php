@@ -55,10 +55,24 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Modal Header</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Some text in the modal.</p>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered">
+                                            <thead style="background-color: #a94442">
+                                            <th>Articulo</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio Venta</th>
+                                            </thead>
+                                            @foreach($detalle_venta_hoy as $vent)
+                                                <tr>
+                                                    <td style="color: black;">{{$vent->idarticulo}}</td>
+                                                    <td style="color: black;">{{$vent->cantidad}}</td>
+                                                    <td style="color: black;">{{$vent->precio_venta}}</td>
+                                                </tr>
+                                            @endforeach
+                                        </table>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -113,6 +127,7 @@
             <div class="container col-lg-12 ">
                 <div class="panel panel-info">
                     <div class="panel-body">
+                        <a href="{{URL::action('ReportesController@exportProveedorQueMasProductosVende')}}"><button class="btn btn-success">Exportar<i class="fa fa-file-excel-o"></i></button></a>
                         <div id="sales-chart" style="position: relative; height: 300px;"></div>
                     </div>
                 </div>
@@ -120,6 +135,7 @@
             <div class="container col-lg-12 ">
                 <div class="panel panel-info">
                     <div class="panel-body">
+                        <a href="{{URL::action('ReportesController@exportVentasPorProducto')}}"><button class="btn btn-success">Exportar<i class="fa fa-file-excel-o"></i></button></a>
                         <div id="revenue-chart" style="position: relative; height: 300px;"></div>
                     </div>
                 </div>
@@ -304,29 +320,6 @@
             error: function(a){
             }
         });
-
-        {{--$('input[name="daterange"]').daterangepicker({},--}}
-
-            {{--function(start, end, label) {--}}
-            {{--$.ajax({--}}
-
-                {{--type:'get',--}}
-                {{--url:"{!!URL::to('ganancias')!!}",--}}
-                {{--success:function(result) {--}}
-                    {{--console.log("sent back -> do whatever you want now");--}}
-                {{--},--}}
-                {{--error: function(a){--}}
-                    {{--alert(a);--}}
-                {{--}--}}
-            {{--});--}}
-        {{--});--}}
-        {{--$('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {--}}
-            {{--$(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));--}}
-        {{--});--}}
-
-        {{--$('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {--}}
-            {{--$(this).val('');--}}
-        {{--});--}}
 
 
     });

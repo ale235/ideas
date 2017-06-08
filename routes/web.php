@@ -42,6 +42,8 @@ Route::get('/proveedorQueMasProductosVende','ReportesController@proveedorQueMasP
 Route::get('/ganancias','ReportesController@ganancias');
 Route::get('/volveracero/{id}','ReportesController@volveracero');
 Route::get('/detalleganancias/{daterange}','ReportesController@detalleganancias');
+Route::get('/exportVentasPorProducto','ReportesController@exportVentasPorProducto');
+Route::get('/exportProveedorQueMasProductosVende','ReportesController@exportProveedorQueMasProductosVende');
 
 Route::get('/buscarPrecioArticuloVentasPorCodigo','VentaController@buscarPrecioArticuloVentasPorCodigo');
 
