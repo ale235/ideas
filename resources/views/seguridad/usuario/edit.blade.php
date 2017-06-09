@@ -68,6 +68,18 @@
                     <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                 </div>
             </div>
+
+
+            <div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
+                <label for="email" class="col-md-4 control-label">Role</label>
+
+                <div class="col-md-6">
+                    <select id="role" name="role">
+                        <option value="1">Administrador</option>
+                        <option value="2">Vendedor</option>
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <button class="btn btn-primary" type="submit">Guardar</button>
                 <button class="btn btn-danger" type="reset">Reset</button>
