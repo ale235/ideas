@@ -75,4 +75,6 @@ Route::get('/editarEstado/{id}', 'CategoriaController@editarEstado');
 Route::get('/cambiarEstadoArticulo/{id}', 'ArticuloController@cambiarEstadoArticulo');
 Route::get('/cambiarEstado/{id}', 'ProveedorController@cambiarEstado');
 
+Route::get('/buscarUltimoId','ArticuloController@buscarUltimoId');
+
 Auth::routes();

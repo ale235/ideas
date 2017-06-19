@@ -111,11 +111,33 @@
 <script>
     var art = {!! json_encode($articulos->toArray()) !!};
     var casa = '<?php echo $articulos ?>';
+    var ultimoid = null;
     $(document).ready(function () {
-        articulo = $('#idproveedores option:selected').text();
+ /*       articulo = $('#idproveedores option:selected').text();
         $('#idproveedores').click(function () {
             agregarprov();
         })
+        */
+ /*       $(document).on('change','#idproveedores',function(){
+            // console.log("hmm its change");
+
+            var cat_id=$(this).val();
+
+            $.ajax({
+                type:'get',
+
+                data:{'codigo':cat_id},
+                success:function(data){
+                    $('#idproveedorsolo').val(data[0].idpersona);
+
+                },
+                error:function(){
+
+                }
+            });
+        });
+*/
+
         $(document).on('change','#idproveedores',function(){
             // console.log("hmm its change");
 
@@ -133,6 +155,27 @@
 
                 }
             });
+            $.ajax({
+                type:'get',
+                url:'{!!URL::to('buscarUltimoId')!!}',
+                data:{'codigo':cat_id},
+                success:function(data){
+                    //$('#idproveedorsolo').val(data[0].idpersona);
+                    if(data.length==0){
+                        ultimoid = 0;
+                    }else{
+                        ultimoid = data[0].idarticulo;
+                        console.log(data)
+                    }
+
+                    agregarprov()
+
+                },
+                error:function(){
+
+                }
+            });
+
         });
 
         $(document).on('change','#codigo',function(){
@@ -147,22 +190,18 @@
         });
     });
 
-function agregarprov() {
-    var proveedorselected = $('#idproveedores option:selected').text();
-    var obj = JSON.parse(casa);
-    for (i = 0; i < obj.length; i++) {
-       if(proveedorselected == obj[i].proveedor){
-          var a = obj[i].codigo.substr(obj[i].proveedor.length, obj[i].codigo.length);
-          var b = parseInt(a) + 1;
-          var c =ajustar(5,b);
-           $('#codigo').val(c);
-       }else{
-           var d= ajustar(5,1);
-           $('#codigo').val(d);
-       }
+    function agregarprov() {
+        var proveedorselected = $('#idproveedores option:selected').text();
+        if (ultimoid.length == 0) {
+            var d = ajustar(5, 1);
+            $('#codigo').val(d);
+        } else {
+            var a = ultimoid;
+            var b = parseInt(a) + 1;
+            var c = ajustar(5, b);
+            $('#codigo').val(c);
+        }
     }
-}
-
     function ajustar(tam, num) {
         if (num.toString().length < tam) return ajustar(tam, "0" + num)
         else return num;

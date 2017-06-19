@@ -68,6 +68,7 @@ class ArticuloController extends Controller
         $proveedores = DB::table('persona')
             ->where('tipo_persona','=','Proveedor')
             ->where('estado','=','Activo')
+            ->orderBy('codigo','desc')
             ->get();
         $categorias=DB::table('categoria')
             ->where('condicion','=','1')
@@ -281,6 +282,18 @@ class ArticuloController extends Controller
         $p=DB::table('persona as p')->select('p.idpersona')->where('p.codigo','=', $request->codigo)->get();
         return response()->json($p);
     }
+
+    public function buscarUltimoId(Request $request){
+
+              //it will get price if its id match with product id
+              //$p=Product::select('price')->where('id',$request->id)->first();
+              $p=DB::table('articulo as art')
+                     ->select('art.idarticulo')
+                  ->where('art.proveedor','=', $request->codigo)
+                  ->orderBy('art.idarticulo','desc')
+                  ->get();
+       return response()->json($p);
+   }
 
 // ->orderBy('p.idprecio','desc')
 //->select(DB::raw('max(p.idprecio) as elprecio'),'p.idprecio','art.idarticulo','p.fecha','p.precio_venta','art.codigo','art.nombre','p.porcentaje','p.precio_compra')

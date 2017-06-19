@@ -53,6 +53,7 @@ class ProveedorController extends Controller
         $persona->instagram = $request->get('instagram');
         $persona->telefono = $request->get('telefono');
         $persona->email = $request->get('email');
+        $persona->estado = 'Activo';
         $persona->save();
         if($request->get('lastPage')){
             return Redirect::to('almacen/articulo/create');
