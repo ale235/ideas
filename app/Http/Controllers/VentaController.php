@@ -93,8 +93,7 @@ class VentaController extends Controller
 
     public function store(VentaFormRequest $request)
     {
-        try {
-            DB::beginTransaction();
+
             $venta = new Venta;
             if($request->get('checkCliente')=='true'){
                 $persona = new Persona;
@@ -112,14 +111,19 @@ class VentaController extends Controller
             else{
                 $venta->idcliente = $request->get('idcliente');
             }
+            if($request->get('checkOtraFecha')=='true'){
+                $venta->fecha_hora = new Carbon($request->daterange);
+            }
+            else {
+                $mytime = Carbon::now('America/Argentina/Buenos_Aires');
+
+                $venta->fecha_hora = $mytime->toDateTimeString();
+            }
             $venta->tipo_comprobante = $request->get('tipo_comprobante');
             $venta->serie_comprobante = $request->get('serie_comprobante');
             $venta->num_comprobante = $request->get('num_comprobante');
             $venta->total_venta = $request->get('total_venta');
             $venta->idvendedor = auth()->user()->id;
-            $mytime = Carbon::now('America/Argentina/Buenos_Aires');
-
-            $venta->fecha_hora = $mytime->toDateTimeString();
             $venta->impuesto = '0';
             $venta->estado = 'Activo';
             $venta->save();
@@ -159,10 +163,6 @@ class VentaController extends Controller
             $venta->ganancia = $ganancia;
             $venta->save();
 
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-        }
 
 
         return Redirect::to('ventas/venta');
@@ -293,7 +293,7 @@ class VentaController extends Controller
 
         //if our chosen id and products table prod_cat_id col match the get first 100 data
         //$request->id here is the id of our chosen option id
-        $articulo = DB::table('articulo')->where('codigo', '=', $request->codigo)->first();
+        $articulo = DB::table('articulo')->where('idarticulo', '=', $request->id)->first();
 
         $precio = DB::table('precio')
             ->where('idarticulo', '=', $articulo->idarticulo)

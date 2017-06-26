@@ -20,57 +20,17 @@
             {!! Form::open(array('url'=>'ventas/venta', 'method'=>'POST', 'autocomplete'=>'off', 'id'=>'myForm'))!!}
             {{Form::token()}}
     <div class="row">
-        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+        <div class="col-lg-3 col-sm-3 col-md-3 col-xs-12">
         <div class="form-group">
             <label>Código del artículo</label>
-                <div class="input-group">
-                    <span data-toggle="modal" data-target="#myModal" class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <!-- Modal -->
-                    <div id="myModal" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Modal Header</h4>
-                                </div>
-                                <div class="modal-body cuerpo">
-                                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-                                        <div class="from-group">
-                                            <label for="proveedor">Proveedor</label>
-                                            <select name="idproveedor" id="idproveedor"
-                                                    class="lista-proveedores form-control">
-                                                <option value="0" disabled="true" selected="true">Seleccione el
-                                                    Proveedor
-                                                </option>
-                                                @foreach($proveedores as $proveedor)
-                                                    <option value="{{$proveedor->idpersona}}+{{$proveedor->codigo}}">{{$proveedor->codigo}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-                                        <div class="from-group">
-                                            <label for="articulo">Artículo</label>
-                                            <select class="nombre-articulo form-control">
-                                                <option value="0" disabled="true" selected="true">Artículos</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-primary" type="button" data-dismiss="modal">Guardar</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <input type="text" class="form-control" name="pidarticulo" id="pidarticulo"/>
-                    <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
-                    <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
-                </div>
+            <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker"  data-live-search="true">
+                <option>Seleccione un artículo</option>
+                @foreach($articulos as $articulo)
+                    <option value="{{$articulo->idarticulo}}">{{$articulo->codigo}} {{$articulo->nombre}}</option>
+                @endforeach
+            </select>
+            <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
+            <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
         </div>
         </div>
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
@@ -198,6 +158,24 @@
             </div>
         </div>
         </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
+            <div class="from-group">
+                <div class="checkbox">
+                    <label><input type="checkbox" id="checkOtraFecha" name="checkOtraFecha" value="false">Ingresar otra fecha</label>
+                </div>
+            </div>
+        </div>
+        <div id="checkOtraFechaInputs"  class="container">
+            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+                <div class="from-group">
+                        <div class="col-lg-7 col-sm-7 col-md-7 col-xs-12 inputGroupContainer">
+                            <div class="from-group ">
+                                <input type="text" class="form-control" id="daterange" name="daterange"/>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12" id="guardar">
             <div class="form-group">
                 <input name="_token" value="{{csrf_token()}}" type="hidden">
@@ -232,7 +210,36 @@
         }
     });
 
+    var form = $('#myForm'),
+        checkOtraFecha = $('#checkOtraFecha'),
+        chOtraFechaShipBlock = $('#checkOtraFechaInputs');
+        chOtraFechaShipBlock.hide();
+        daterangeOtraFecha = $('#daterange');
+    checkOtraFecha.on('click', function() {
+        if($(this).is(':checked')) {
+            chOtraFechaShipBlock.show();
+            daterangeOtraFecha.attr('required', true);
+            checkOtraFecha.attr('value','true');
+        } else {
+            chOtraFechaShipBlock.hide();
+            daterangeOtraFecha.attr('required', false);
+            checkOtraFecha.attr('value','false');
+        }
+    });
+
+
     $(document).ready(function () {
+        $('input[name="daterange"]').daterangepicker(
+            {
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    cancelLabel: 'Clear',
+                }
+            }
+        );
        $('#bt_add').click(function () {
            agregar();
        });
@@ -321,13 +328,13 @@
             $.ajax({
                 type:'get',
                 url:'{!!URL::to('buscarPrecioArticuloVentasPorCodigo')!!}',
-                data:{'codigo':cat_codigo},
+                data:{'id':cat_codigo},
                 success:function(data){
                     //console.log('success');
 
                     console.log(data);
 
-                    $('#pprecio_venta').val(data[0].precio_venta);
+                    $('#pprecio_venta').val(data.ultimoprecio);
                     $('#pidarticulo').val(data.codigo);
                     $('#pidarticuloidarticulo').val(data.idarticulo);
                     $('#pidarticulonombre').val(data.nombre);

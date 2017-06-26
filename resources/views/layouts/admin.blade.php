@@ -114,9 +114,10 @@
                     <ul class="treeview-menu">
                         <li><a href="{{ url('ventas/cliente') }}">Clientes</a></li>
                         <li><a href="{{ url('ventas/venta?daterange') }}">Ventas</a></li>
-                        <li><a href="{{ url('ventas/venta/create') }}">Facturación</a></li>
-
                     </ul>
+                </li>
+                <li class="treeview">
+                    <a href="{{ url('ventas/venta/create') }}"><i class='fa fa-link'></i> <span>Facturación</span> <i class="fa fa-angle-left pull-right"></i></a>
                 </li>
                 @if (Auth::user()->role == 1)
                 <li class="treeview">
