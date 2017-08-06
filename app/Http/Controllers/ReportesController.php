@@ -37,11 +37,11 @@ class ReportesController extends Controller
 
         $detalle_venta_hoy = DB::table('detalle_venta as dv')
             ->join('venta as v','dv.idventa','=','v.idventa')
+            ->join('articulo as art','art.idarticulo','=','dv.idarticulo')
             ->whereDay('v.fecha_hora',$mytime->day)
             ->whereMonth('v.fecha_hora',$mytime->month)
             ->whereYear('v.fecha_hora',$mytime->year)
             ->get();
-
         return view('reportes.grafico.index', ['proveedores'=> $proveedores,'articulos'=>$articulos, 'detalle_venta_hoy'=> $detalle_venta_hoy]);
         //return view('home');
     }

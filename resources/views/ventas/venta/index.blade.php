@@ -10,6 +10,10 @@
         <a href="{{URL::action('VentaController@exportResultado',$date)}}"><button class="btn btn-success pull-right">Exportar Resultado <i class="fa fa-file-excel-o"></i></button></a>
         <a href="{{URL::action('VentaController@exportDetalle',$date)}}"><button class="btn btn-success pull-right">Exportar Resultado con Detalle<i class="fa fa-file-excel-o"></i></button></a>
         <a href="{{URL::action('VentaController@cajaDelDia')}}"><button class="btn btn-success pull-right">Caja del día<i class="fa fa-file-excel-o"></i></button></a>
+        <a href="{{URL::action('VentaController@productoMasVendido',$date)}}"><button class="btn btn-success pull-right">Producto más vendido<i class="fa fa-file-excel-o"></i></button></a>
+        <a href="{{URL::action('VentaController@proveedorQueMasVende',$date)}}"><button class="btn btn-success pull-right">Proveedor que más vende<i class="fa fa-file-excel-o"></i></button></a>
+
+
         @endif
         @include('ventas.venta.search')
     </div>
@@ -55,6 +59,7 @@
 //        d.setHours(0,0,0);
         $('input[name="daterange"]').daterangepicker(
             {
+
                 locale: {
 //                    useCurrent: false,
                     format: 'YYYY-MM-DD',
@@ -67,7 +72,7 @@
         );
 
     });
-    $('#bt_add').click(function () {
+/*    $('#bt_add').click(function () {
         console.log($('input[name="daterange"]').val())
     });
     var val = getURLParameter('daterange');
@@ -77,7 +82,7 @@
         return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
     }
 
-
+*/
 
 
 </script>

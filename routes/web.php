@@ -77,4 +77,7 @@ Route::get('/cambiarEstado/{id}', 'ProveedorController@cambiarEstado');
 
 Route::get('/buscarUltimoId','ArticuloController@buscarUltimoId');
 
+Route::get('/productoMasVendido/{daterange}','VentaController@productoMasVendido');
+Route::get('/proveedorQueMasVende/{daterange}','VentaController@proveedorQueMasVende');
+
 Auth::routes();

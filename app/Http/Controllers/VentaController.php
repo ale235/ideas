@@ -33,16 +33,15 @@ class VentaController extends Controller
             if ($request->get('daterange') == null || $request->get('daterange') == '') {
                 $mytime = Carbon::now('America/Argentina/Buenos_Aires');
                 $date = $mytime->toDateTimeString();
-                $pieces[0] = $date;
-                $yearago = $mytime->subYears(1);
-                $date2 = $yearago->toDateTimeString();
-                $pieces[1] = $date2;
                 $ventas = DB::table('venta as v')
                     ->join('persona as p', 'v.idcliente', '=', 'p.idpersona')
                     ->join('detalle_venta as dv', 'v.idventa', '=', 'dv.idventa')
                     ->select('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta','v.total_venta_real')
-                    ->whereBetween('v.fecha_hora', array(new Carbon($pieces[1]), new Carbon($pieces[0])))
+                   // ->whereBetween('v.fecha_hora', array(new Carbon($pieces[1]), new Carbon($pieces[0])))
 //                ->where('v.num_comprobante', 'LIKE', '%'.$query.'%')
+                    ->whereDay('fecha_hora',$mytime->day)
+                    ->whereMonth('fecha_hora',$mytime->month)
+                    ->whereYear('fecha_hora',$mytime->year)
                     ->orderBy('v.idventa', 'desc')
                     ->groupBy('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta','v.total_venta_real')
                     ->paginate(20);
@@ -119,6 +118,12 @@ class VentaController extends Controller
 
                 $venta->fecha_hora = $mytime->toDateTimeString();
             }
+            if($request->get('checkTarjetaDebito')=='true' && $request->get('checkTarjetaCredito')=='true')
+                $venta->tarjeta = null;
+            else if($request->get('checkTarjetaDebito')=='true')
+                $venta->tarjeta = "Debito";
+            else if($request->get('checkTarjetaCredito')=='true')
+                $venta->tarjeta = "Credito";
             $venta->tipo_comprobante = $request->get('tipo_comprobante');
             $venta->serie_comprobante = $request->get('serie_comprobante');
             $venta->num_comprobante = $request->get('num_comprobante');
@@ -319,13 +324,15 @@ class VentaController extends Controller
     {
 
         if ($date != null && $date != '' && strtotime($date)) {
-
+            $mytime = Carbon::now('America/Argentina/Buenos_Aires');
 
             $aux = DB::table('articulo as a')
                 ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
                 ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
                 ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', DB::raw('SUM(dv.cantidad) AS cantidad'), DB::raw('SUM(dv.precio_venta*dv.cantidad) AS precio_total'))
-                ->where('v.fecha_hora', '<', $date)
+                ->whereDay('fecha_hora',$mytime->day)
+                ->whereMonth('fecha_hora',$mytime->month)
+                ->whereYear('fecha_hora',$mytime->year)
                 ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora')
                 ->orderBy('v.fecha_hora', 'desc')
                 ->get();
@@ -386,14 +393,16 @@ class VentaController extends Controller
         })->download('xls');
     }
 
-    public function exportResultado(Request $request, $date)
+    public function exportResultado($date)
     {
-
         if ($date != null && $date != '' && strtotime($date)) {
+            $mytime = Carbon::now('America/Argentina/Buenos_Aires');
             $aux = DB::table('venta as v')
                 ->join('persona as p', 'p.idpersona', '=', 'v.idcliente')
                 ->select('v.fecha_hora', 'p.nombre', 'v.total_venta')
-                ->where('v.fecha_hora', '<', $date)
+                ->whereDay('fecha_hora',$mytime->day)
+                ->whereMonth('fecha_hora',$mytime->month)
+                ->whereYear('fecha_hora',$mytime->year)
                 ->get();
         } else {
             $pieces = explode(" - ", $date);
@@ -457,9 +466,9 @@ class VentaController extends Controller
         $aux = DB::table('articulo as a')
             ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
             ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
-            ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', DB::raw('SUM(dv.cantidad) AS cantidad'), DB::raw('SUM(dv.precio_venta*dv.cantidad) AS precio_total'))
+            ->select('a.nombre','a.codigo' ,'dv.precio_venta', 'v.fecha_hora', DB::raw('SUM(dv.cantidad) AS cantidad'), DB::raw('SUM(dv.precio_venta*dv.cantidad) AS precio_total'))
             ->whereBetween('v.fecha_hora', array($yesterday, $today))
-            ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora')
+            ->groupBy('a.nombre','a.codigo' ,'dv.precio_venta', 'v.fecha_hora')
             ->orderBy('v.fecha_hora', 'desc')
             ->get();
 
@@ -468,21 +477,23 @@ class VentaController extends Controller
         $total = 0;
         $fila0 = [];
         $fila0[0] = 'Nombre';
-        $fila0[1] = 'Precio Venta';
-        $fila0[2] = 'Cantidad';
-        $fila0[3] = 'Precio total';
-        $fila0[4] = 'Fecha';
+        $fila0[1] = 'Codigo';
+        $fila0[2] = 'Precio Venta';
+        $fila0[3] = 'Cantidad';
+        $fila0[4] = 'Precio total';
+        $fila0[5] = 'Fecha';
         $columna[0] = $fila0;
 
         foreach ($aux as $a) {
             $fila = [];
 
             $fila[0] = $a->nombre;
-            $fila[1] = $a->precio_venta;
-            $fila[2] = $a->cantidad;
-            $fila[3] = $a->precio_total;
-            $fila[4] = $a->fecha_hora;
-            $total = $total + $fila[3];
+            $fila[1] = $a->codigo;
+            $fila[2] =$a->precio_venta;
+            $fila[3] =$a->cantidad;
+            $fila[4] =$a->precio_total;
+            $fila[5] =$a->fecha_hora;
+            $total = $total + $fila[4];
             $columna[$cont2] = $fila;
             $cont2 = $cont2 + 1;
         }
@@ -490,8 +501,9 @@ class VentaController extends Controller
         $filanueva[0] = ' ';
         $filanueva[1] = ' ';
         $filanueva[2] = ' ';
-        $filanueva[3] = $total;
-        $filanueva[4] = ' ';
+        $filanueva[3] = ' ';
+        $filanueva[4] = $total;;
+        $filanueva[5] = ' ';
         $columna[$cont2] = $filanueva;
 
         Excel::create('Laravel Excel', function ($excel) use ($columna) {
@@ -504,5 +516,137 @@ class VentaController extends Controller
             });
 
         })->download('xls');
+    }
+
+    public function productoMasVendido($date)
+    {
+
+        if ($date != null && $date != '' && strtotime($date)) {
+            $mytime = Carbon::now('America/Argentina/Buenos_Aires');
+
+            $collection = DB::table('detalle_venta as dv')
+                ->join('venta as v','v.idventa','=','dv.idventa')
+                ->join('articulo as a','a.idarticulo','=','dv.idarticulo')
+                ->join('persona as p','a.proveedor','=','p.codigo')
+                ->select('a.idarticulo',DB::raw('SUM(dv.cantidad) as cantidadTotal'),'a.codigo','dv.precio_venta','a.nombre')
+                ->where('p.estado','=','Activo')
+                ->whereDay('fecha_hora',$mytime->day)
+                ->whereMonth('fecha_hora',$mytime->month)
+                ->whereYear('fecha_hora',$mytime->year)
+                ->groupBy('a.idarticulo','a.codigo','a.nombre','dv.precio_venta')
+                ->orderBy('cantidadTotal','desc')
+                ->limit(10)
+                ->get();
+        } else {
+            $pieces = explode(" - ", $date);
+            $collection = DB::table('detalle_venta as dv')
+                ->join('venta as v','v.idventa','=','dv.idventa')
+                ->join('articulo as a','a.idarticulo','=','dv.idarticulo')
+                ->join('persona as p','a.proveedor','=','p.codigo')
+                ->select('a.idarticulo',DB::raw('SUM(dv.cantidad) as cantidadTotal'),'a.nombre','a.codigo','dv.precio_venta')
+                ->where('p.estado','=','Activo')
+                ->whereBetween('v.fecha_hora', array(new Carbon($pieces[0]), new Carbon($pieces[1])))
+                ->groupBy('a.idarticulo','a.codigo','a.nombre','dv.precio_venta')
+                ->orderBy('cantidadTotal','desc')
+                ->limit(10)
+                ->get();
+        }
+        //dd($collection);
+        $columna = [];
+        $cont2 = 1;
+        $fila0 = [];
+        $fila0[0] = 'Codigo';
+        $fila0[1] = 'Nombre';
+        $fila0[2] = 'Precio de Venta';
+        $fila0[3] = 'Cantidad Total';
+
+        $columna[0] = $fila0;
+
+        foreach ($collection as $a) {
+            $fila = [];
+
+            $fila[0] = $a->codigo;
+            $fila[1] = $a->nombre;
+            $fila[2] = $a->precio_venta;
+            $fila[3] = $a->cantidadTotal;
+            $columna[$cont2] = $fila;
+            $cont2 = $cont2 + 1;
+        }
+
+        Excel::create('Laravel Excel', function ($excel) use ($columna) {
+
+            $excel->sheet('Excel sheet', function ($sheet) use ($columna) {
+
+                $sheet->fromArray($columna);
+
+            });
+
+        })->download('xls');
+
+    }
+
+    public function proveedorQueMasVende($date)
+    {
+
+        if ($date != null && $date != '' && strtotime($date)) {
+            $mytime = Carbon::now('America/Argentina/Buenos_Aires');
+
+            $collection = DB::table('detalle_venta as dv')
+                ->join('articulo as a','a.idarticulo','=','dv.idarticulo')
+                ->join('persona as p','a.proveedor','=','p.codigo')
+                ->join('venta as v', 'v.idventa','=','dv.idventa')
+                ->select('a.proveedor',DB::raw('SUM(dv.cantidad) as cantidadTotal'))
+                ->where('p.estado','=','Activo')
+                ->whereDay('v.fecha_hora',$mytime->day)
+                ->whereMonth('v.fecha_hora',$mytime->month)
+                ->whereYear('v.fecha_hora',$mytime->year)
+                ->groupBy('a.proveedor')
+                ->orderBy('cantidadTotal','desc')
+//            ->orderBy('desc')
+                ->limit(10)
+                ->get();
+        } else {
+            $pieces = explode(" - ", $date);
+            $collection = DB::table('detalle_venta as dv')
+                ->join('articulo as a','a.idarticulo','=','dv.idarticulo')
+                ->join('persona as p','a.proveedor','=','p.codigo')
+                ->join('venta as v', 'v.idventa','=','dv.idventa')
+                ->select('a.proveedor',DB::raw('SUM(dv.cantidad) as cantidadTotal'))
+                ->where('p.estado','=','Activo')
+                ->whereBetween('v.fecha_hora', array(new Carbon($pieces[0]), new Carbon($pieces[1])))
+                ->groupBy('a.proveedor')
+                ->orderBy('cantidadTotal','desc')
+//            ->orderBy('desc')
+                ->limit(10)
+                ->get();
+        }
+        //dd($collection);
+        $columna = [];
+        $cont2 = 1;
+        $fila0 = [];
+        $fila0[0] = 'Proveedor';
+        $fila0[1] = 'Cantidad Total';
+
+        $columna[0] = $fila0;
+
+        foreach ($collection as $a) {
+            $fila = [];
+
+            $fila[0] = $a->proveedor;
+            $fila[1] = $a->cantidadTotal;
+            $columna[$cont2] = $fila;
+            $cont2 = $cont2 + 1;
+        }
+
+        Excel::create('Laravel Excel', function ($excel) use ($columna) {
+
+            $excel->sheet('Excel sheet', function ($sheet) use ($columna) {
+
+                $sheet->fromArray($columna);
+
+            });
+
+        })->download('xls');
+
     }
 }

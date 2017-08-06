@@ -165,6 +165,20 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
+            <div class="from-group">
+                <div class="checkbox">
+                    <label><input type="checkbox" id="checkTarjetaDebito" name="checkTarjetaDebito" value="false">Tarjeta de Débito</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
+            <div class="from-group">
+                <div class="checkbox">
+                    <label><input type="checkbox" id="checkTarjetaCredito" name="checkTarjetaCredito" value="false">Tarjeta de Crédito</label>
+                </div>
+            </div>
+        </div>
         <div id="checkOtraFechaInputs"  class="container">
             <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
                 <div class="from-group">
@@ -227,6 +241,23 @@
         }
     });
 
+    checkboxTarjetaDebito = $('#checkTarjetaDebito');
+    checkboxTarjetaDebito.on('click',function () {
+        if($(this).is(':checked')) {
+            checkboxTarjetaDebito.attr('value','true');
+        } else {
+            checkboxTarjetaDebito.attr('value','false');
+        }
+    });
+
+    checkboxTarjetaCredito = $('#checkTarjetaCredito');
+    checkboxTarjetaCredito.on('click',function () {
+        if($(this).is(':checked')) {
+            checkboxTarjetaCredito.attr('value','true');
+        } else {
+            checkboxTarjetaCredito.attr('value','false');
+        }
+    });
 
     $(document).ready(function () {
         $('input[name="daterange"]').daterangepicker(

@@ -29,6 +29,7 @@ class ArticuloController extends Controller
         {
             $query = trim($request->get('searchText'));
             $query2 = trim($request->get('searchText2'));
+            $query4 = trim($request->get('searchText3'));
             $categorias=DB::table('categoria')
                 ->where('condicion','=','1')
                 ->get();
@@ -48,13 +49,14 @@ class ArticuloController extends Controller
                 ->where([
                     ['art.nombre','LIKE','%'.$query.'%'],
                     ['art.codigo','LIKE','%'.$query2.'%'],
+                    ['art.proveedor','LIKE','%'.$query4.'%'],
                     ['art.estado', '=', $query3],
                 ])
                 ->orderBy('art.idarticulo','desc')
 //                ->orderBy('p.idprecio','desc')
                 ->paginate('30');
 
-            return view('almacen.articulo.index', ['articulos'=>$articulos,'searchText'=>$query, 'searchText2'=>$query2, 'estados'=>$estados, 'selectText'=>$query3, 'categorias'=>$categorias]);
+            return view('almacen.articulo.index', ['articulos'=>$articulos,'searchText'=>$query, 'searchText2'=>$query2, 'estados'=>$estados, 'selectText'=>$query3, 'categorias'=>$categorias, 'searchText3'=>$query4]);
         }
     }
 

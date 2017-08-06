@@ -1,7 +1,7 @@
 {!! Form::open(array('url'=>'ventas/venta', 'method'=>'GET', 'autocomplete'=>'off', 'role'=>'search', 'class'=>'form-horizontal', 'id'=>'elform')) !!}
 <div class="container">
     <div class="form-group">
-        <label class="col-md-4 control-label">Código del artículo</label>
+        <label class="col-md-4 control-label">Fechas a Filtrar</label>
         <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
