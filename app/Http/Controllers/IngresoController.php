@@ -52,13 +52,11 @@ class IngresoController extends Controller
 
     public function store(IngresoFormRequest $request)
     {
-//        try
-//        {
-//            DB::beginTransaction();
+        try
+        {
+            DB::beginTransaction();
             $ingreso = new Ingreso;
-//            $pieces = explode("+", $request->get('idproveedor'));
-//            $ingreso->idproveedor = $pieces[0];
-        $ingreso->idproveedor = $request->get('pidproveedor');
+            $ingreso->idproveedor = $request->get('pidproveedor');
             $ingreso->tipo_comprobante=$request->get('tipo_comprobante');
             $ingreso->serie_comprobante=$request->get('serie_comprobante');
             $ingreso->numero_comprobante=$request->get('numero_comprobante');
@@ -99,12 +97,12 @@ class IngresoController extends Controller
 
                 $cont= $cont+1;
             }
-//            DB::commit();
-//        }
-//        catch(\Exception $e)
-//        {
-//            DB::rollback();
-//        }
+            DB::commit();
+        }
+        catch(\Exception $e)
+        {
+            DB::rollback();
+        }
 
         return Redirect::to('compras/ingreso');
     }
@@ -130,9 +128,28 @@ class IngresoController extends Controller
 
     public function destroy($id)
     {
-        $ingreso = Ingreso::findOrFail($id);
-        $ingreso->estado = 'Cancelado';
-        $ingreso->update();
+        try{
+            DB::beginTransaction();
+            $ingreso = Ingreso::findOrFail($id);
+            $fecha = new Carbon($ingreso->fecha_hora);
+            $detalle_ingreso = DetalleIngreso::where('idingreso',$id)->get();
+            foreach ($detalle_ingreso as $di){
+                $precios = Precio::where('fecha', $fecha->format('Y-m-d'))->where('idarticulo', $di->idarticulo)->get();
+                foreach ($precios as $p){
+                    $p->delete();
+                }
+
+                $di->delete();
+            }
+
+            $ingreso->delete();
+            DB::commit();
+        }
+        catch(\Exception $e)
+        {
+            DB::rollback();
+        }
+
         return Redirect::to('compras/ingreso');
     }
 
@@ -230,26 +247,9 @@ class IngresoController extends Controller
         $articulo = DB::table('articulo as art')
             ->select('art.nombre','p.idpersona','art.idarticulo')
             ->join('persona as p','p.codigo','=','art.proveedor')
-            ->where('art.codigo','=',$request->codigo)->first();
+            ->where('art.idarticulo','=',$request->codigo)->first();
 
-//        $precio= DB::table('precio')
-//            ->where('idarticulo','=',$articulo->idarticulo)
-//            ->orderBy('idarticulo','desc')
-//            ->orderBy('idprecio','desc')
-//            ->get();
-//        $precio = $precio->unique('idarticulo');
-        //$elprecio = DB::table('articulo')join('precio','idarticulo','=',$precio->idarticulo)->get();
-        //$data= DB::table('articulo as art')->join('persona as p', 'p.codigo' , '=', 'art.proveedor')->select('art.idarticulo','art.nombre','art.codigo','id.persona')->where('p.codigo','=',$request->codigo)->get();
-//        $precio = $precio->merge($articulo);
-
-        // $data= DB::table('articulo as art')->where('idarticulo','=',$request->id);
-        //$data=Product::select('productname','id')->where('prod_cat_id',$request->id)->take(100)->get();
         return response()->json($articulo);//then sent this data to ajax success
-
-//        $request->id here is the id of our chosen option id
-//        $data=DB::table('articulo as art')->select('idarticulo','nombre')->get();
-//        //$data=Product::select('productname','id')->where('prod_cat_id',$request->id)->take(100)->get();
-//        return response()->json($data);//then sent this data to ajax success
     }
 
     public function buscarArticuloParaIngreso (Request $request) {
