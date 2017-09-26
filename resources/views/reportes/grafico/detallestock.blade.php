@@ -31,7 +31,7 @@
                                 <td>{{$det->nombre}}</td>
                                 <td>{{$det->stock}}</td>
                                 <td>{{$det->codigo}}</td>
-                                <td><a href="{{URL::action('ReportesController@volveracero',$det->idarticulo)}}"><button class="btn btn-primary">Volver a cero</button></a></td>
+                                <td><a href="{{URL::action('ArticuloController@edit',$det->idarticulo)}}"><button class="btn btn-primary">Editar artículo</button></a></td>
                             </tr>
                         @endforeach
                         </tbody>

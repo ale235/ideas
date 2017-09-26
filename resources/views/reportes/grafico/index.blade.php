@@ -115,7 +115,7 @@
                 </div>
             </div>
             <!-- ./col -->
-            <div style="display: none" class="col-lg-3 col-xs-6">
+            <div class="col-lg-3 col-xs-6">
                 <!-- small box -->
                 <div class="small-box bg-red">
                     <div class="inner">
@@ -185,7 +185,6 @@
     </section>
     </body>
     </html>
-    {{--<canvas id="projects-graph" width="1000" height="400"></canvas>--}}
 
 @endsection
 @push('scripts')
