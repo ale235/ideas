@@ -22,6 +22,9 @@
                      <th>Codigo</th>
                      <th>Precio</th>
                      <th>Categoría</th>
+                     @if (Auth::user()->role == 1)
+                         <th>Stock</th>
+                     @endif
                      <th>Estado</th>
                      <th>Opciones</th>
                  </thead>
@@ -31,6 +34,9 @@
                      <td>{{$art->codigo}}</td>
                      <td>{{$art->ultimoprecio}}</td>
                      <td>{{$art->categoria}}</td>
+                     @if (Auth::user()->role == 1)
+                         <td>{{$art->stock}}</td>
+                     @endif
                      <td>{{$art->estado}}</td>
                      <td>
                          <a href="{{URL::action('ArticuloController@edit',$art->idarticulo)}}"><button class="btn btn-info">Editar</button></a>

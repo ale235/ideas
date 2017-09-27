@@ -59,6 +59,13 @@
                 <label for="codigo">Codigo</label>
                 <input type="text" name="codigo" required value="{{$articulo->codigo}}" class="form-control">
         </div>
+        @if (Auth::user()->role == 1)
+            <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+                <label for="codigo">Stock</label>
+                <input type="text" name="codigo" required value="{{$articulo->stock}}" class="form-control">
+            </div>
+        @endif
+
         <div class="row">
         <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
             <div class="form-group">

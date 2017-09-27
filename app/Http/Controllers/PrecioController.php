@@ -47,6 +47,8 @@ class PrecioController extends Controller
 //            $precio->fecha=$mytime->toDateTimeString();
 //            $precio->save();
             if($request->get('pidarticulo') != null && $request->get('pidarticulo') != ''){
+
+                dd($request);
                 $idarticulo = $request->get('pidarticulo');
                 $porcentaje = $request->get('nuevo_porcentaje1');
                 $mytime= Carbon::now('America/Argentina/Buenos_Aires');
@@ -69,6 +71,7 @@ class PrecioController extends Controller
                 $articulo->update();
             }
             else{
+
                 $cont = 0;
                 $idarticulo = $request->get('idarticulo');
                 $porcentaje = $request->get('nuevo_porcentaje');

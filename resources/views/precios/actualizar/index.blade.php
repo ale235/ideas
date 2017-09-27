@@ -180,7 +180,7 @@
                 url:'{!!URL::to('buscarPrecioArticulo')!!}',
                 data:{'id':cat_id},
                 success:function(data){
-                    var fila =
+                    var fila = '<tr class="selected" id="fila'+cont+'">' +
                         '<td><label type="number">%'+data[0].porcentaje+'</label></td>' +
                         '<td><label type="number">$'+data[0].precio_compra+'</label></td>' +
                         '<td><label type="number">$'+data[0].precio_venta+'</label></td>' +
