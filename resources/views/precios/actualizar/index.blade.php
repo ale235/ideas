@@ -18,7 +18,7 @@
                         <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
                             <div class="from-group">
                                 <label for="proveedor">Proveedor</label>
-                                <select name="idproveedor" id="idproveedor" class="lista-proveedores form-control">
+                                <select name="idproveedor" id="idproveedor" class="lista-proveedores form-control selectpicker" data-live-search="true">
                                     <option value="0" disabled="true" selected="true">Seleccione el Proveedor</option>
                                     @foreach($proveedores as $proveedor)
                                         <option value="{{$proveedor->idpersona}}+{{$proveedor->codigo}}">{{$proveedor->codigo}}</option>
@@ -29,14 +29,14 @@
                         <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
                             <div class="form-group">
                                 <label>Artículo</label>
-                                <select name="pidarticulo" id="pidarticulo" class="lista-articulo form-control">
+                                <select name="pidarticulo" id="pidarticulo" class="selectpicker form-control" data-live-search="true">
                                     <option value="0" disabled="true" selected="true">Artículos</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-                            <table id="detalles1" class="table table-striped table-bordered table-condensed table-hover">
-                                <thead style="background-color: #a94442">
+                            <table id="detalles1" class="table table-bordered table-hover">
+                                <thead>
                                 <th>Porcentaje de venta actual</th>
                                 <th>Costo Actual</th>
                                 <th>Precio de venta actial</th>
@@ -75,7 +75,7 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">Nombre del artículo</label>
                                 <div class="col-md-4 inputGroupContainer">
-                                    <select name="fproveedor" id="fproveedor" class="lista-fproveedores form-control">
+                                    <select name="fproveedor" id="fproveedor" class="lista-fproveedores form-control selectpicker" data-live-search="true">
                                         <option value="0" disabled="true" selected="true">Seleccione el Proveedor
                                         </option>
                                         @foreach($proveedores as $proveedor)
@@ -136,6 +136,10 @@
 @push ('scripts')
 <script>
     $(document).ready(function () {
+
+        $(document).on('change', '.selectpicker', function () {
+            $('.selectpicker').selectpicker('refresh');
+        });
     $(document).on('change','.lista-proveedores',function(){
         // console.log("hmm its change");
 
@@ -161,15 +165,16 @@
                 for(var i=0;i<data.length;i++){
                     op+='<option value="'+data[i].idarticulo+'">'+data[i].nombre+'</option>';
                 }
-                div.parent().parent().parent().parent().parent().find('.lista-articulo').html(" ");
-                div.parent().parent().parent().parent().parent().find('.lista-articulo').append(op);
+                $('#pidarticulo').html(" ");
+                $('#pidarticulo').append(op);
+                $('#pidarticulo').selectpicker('refresh');
             },
             error:function(){
 
             }
         });
     });
-    $(document).on('change','.lista-articulo',function(){
+    $(document).on('change','#pidarticulo',function(){
             var cat_id=$(this).val();
             var div=$(this).parent();
 
@@ -188,6 +193,8 @@
                         '</tr>';
 
                     $('#detalles1').append(fila);
+                    $('#pidarticulo').attr('disabled',true);
+                    $('.lista-proveedores').attr('disabled',true);
                 },
                 error:function(){
 
@@ -221,7 +228,7 @@
                     for(var i=0; i<data.length; i++){
                         agregar(data[i]);
                     }
-
+                    $('.lista-fproveedores').attr('disabled',true);
                 },
                 error:function(){
 

@@ -649,4 +649,10 @@ class VentaController extends Controller
         })->download('xls');
 
     }
+    public function autocomplete(Request $request)
+    {
+        $data = Articulo::select('nombre','codigo')->where('nombre','LIKE','%'.$request->get('query').'%')->get();
+        return response()->json($data);
+    }
+
 }

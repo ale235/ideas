@@ -23,12 +23,13 @@
         <div class="col-lg-3 col-sm-3 col-md-3 col-xs-12">
         <div class="form-group">
             <label>Código del artículo</label>
-            <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker"  data-live-search="true">
-                <option>Seleccione un artículo</option>
-                @foreach($articulos as $articulo)
-                    <option value="{{$articulo->idarticulo}}">{{$articulo->codigo}} {{$articulo->nombre}}</option>
-                @endforeach
-            </select>
+            {{--<select name="pidarticulo" id="pidarticulo" class="form-control selectpicker"  data-live-search="true">--}}
+                {{--<option>Seleccione un artículo</option>--}}
+                {{--@foreach($articulos as $articulo)--}}
+                    {{--<option value="{{$articulo->idarticulo}}">{{$articulo->codigo}} {{$articulo->nombre}}</option>--}}
+                {{--@endforeach--}}
+            {{--</select>--}}
+            <input  name="pidarticulo" id="pidarticulo" />
             <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
             <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
         </div>
@@ -348,32 +349,57 @@
             });
         });
 
-        $(document).on('change','#pidarticulo',function(){
-            // console.log("hmm its change");
+        {{--$(document).on('change','#pidarticulo',function(){--}}
+            {{--// console.log("hmm its change");--}}
 
-            var cat_codigo=$(this).val();
-            var div=$(this).parent();
+            {{--var cat_codigo=$(this).val();--}}
+            {{--var div=$(this).parent();--}}
 
-            var op=" ";
+            {{--var op=" ";--}}
 
-            $.ajax({
-                type:'get',
-                url:'{!!URL::to('buscarPrecioArticuloVentasPorCodigo')!!}',
-                data:{'id':cat_codigo},
-                success:function(data){
-                    //console.log('success');
+            {{--$.ajax({--}}
+                {{--type:'get',--}}
+                {{--url:'{!!URL::to('buscarPrecioArticuloVentasPorCodigo')!!}',--}}
+                {{--data:{'id':cat_codigo},--}}
+                {{--success:function(data){--}}
+                    {{--//console.log('success');--}}
 
-                    console.log(data);
+                    {{--console.log(data);--}}
 
-                    $('#pprecio_venta').val(data.ultimoprecio);
-                    $('#pidarticulo').val(data.codigo);
-                    $('#pidarticuloidarticulo').val(data.idarticulo);
-                    $('#pidarticulonombre').val(data.nombre);
-                },
-                error:function(){
-                alert('NO')
-                }
-            });
+                    {{--$('#pprecio_venta').val(data.ultimoprecio);--}}
+                    {{--$('#pidarticulo').val(data.codigo);--}}
+                    {{--$('#pidarticuloidarticulo').val(data.idarticulo);--}}
+                    {{--$('#pidarticulonombre').val(data.nombre);--}}
+                {{--},--}}
+                {{--error:function(){--}}
+                {{--alert('NO')--}}
+                {{--}--}}
+            {{--});--}}
+        {{--});--}}
+        var path ="{{ route('autocomplete') }}";
+        $("#pidarticulo").typeahead({
+            minLength: 3,
+            autoSelect: true,
+            dataType: 'json',
+            source: function (query, process) {
+
+                return $.get(path, {query:query}, function (data) {
+                    var nombres = data.map(function (item) {
+                        return item.nombre
+                    });
+                    return process(nombres);
+                })
+            },
+//            updater:function (item,data) {
+//                console.log(item)
+//                //item = selected item
+//                //do your stuff.
+//
+//                //dont forget to return the item to reflect them into input
+//                return item;
+//
+//            }
+
         });
     });
     var cont = 0;
