@@ -80,4 +80,6 @@ Route::get('/buscarUltimoId','ArticuloController@buscarUltimoId');
 Route::get('/productoMasVendido/{daterange}','VentaController@productoMasVendido');
 Route::get('/proveedorQueMasVende/{daterange}','VentaController@proveedorQueMasVende');
 
+Route::get('autocomplete',array('as'=>'autocomplete', 'uses'=>'VentaController@autocomplete'));
+Route::get('/ventasPorDias','ReportesController@ventasPorDias');
 Auth::routes();

@@ -23,12 +23,13 @@
         <div class="col-lg-3 col-sm-3 col-md-3 col-xs-12">
         <div class="form-group">
             <label>Código del artículo</label>
-            <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker"  data-live-search="true">
-                <option>Seleccione un artículo</option>
-                @foreach($articulos as $articulo)
-                    <option value="{{$articulo->idarticulo}}">{{$articulo->codigo}} {{$articulo->nombre}}</option>
-                @endforeach
-            </select>
+            {{--<select name="pidarticulo" id="pidarticulo" class="form-control selectpicker"  data-live-search="true">--}}
+                {{--<option>Seleccione un artículo</option>--}}
+                {{--@foreach($articulos as $articulo)--}}
+                    {{--<option value="{{$articulo->idarticulo}}">{{$articulo->codigo}} {{$articulo->nombre}}</option>--}}
+                {{--@endforeach--}}
+            {{--</select>--}}
+            <input type="text" name="pidarticulo" id="pidarticulo"/>
             <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
             <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
         </div>
@@ -259,18 +260,18 @@
         }
     });
 
-    $(document).ready(function () {
-        $('input[name="daterange"]').daterangepicker(
-            {
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                locale: {
-                    format: 'DD/MM/YYYY',
-                    cancelLabel: 'Clear',
-                }
+    $('input[name="daterange"]').daterangepicker(
+        {
+            singleDatePicker: true,
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                cancelLabel: 'Clear',
             }
-        );
+        }
+    );
+
+    $(document).ready(function () {
        $('#bt_add').click(function () {
            agregar();
        });
@@ -348,33 +349,80 @@
             });
         });
 
-        $(document).on('change','#pidarticulo',function(){
-            // console.log("hmm its change");
+        {{--$(document).on('change','#pidarticulo',function(){--}}
+            {{--// console.log("hmm its change");--}}
 
-            var cat_codigo=$(this).val();
-            var div=$(this).parent();
+            {{--var cat_codigo=$(this).val();--}}
+            {{--var div=$(this).parent();--}}
 
-            var op=" ";
+            {{--var op=" ";--}}
 
-            $.ajax({
-                type:'get',
-                url:'{!!URL::to('buscarPrecioArticuloVentasPorCodigo')!!}',
-                data:{'id':cat_codigo},
-                success:function(data){
-                    //console.log('success');
+            {{--$.ajax({--}}
+                {{--type:'get',--}}
+                {{--url:'{!!URL::to('buscarPrecioArticuloVentasPorCodigo')!!}',--}}
+                {{--data:{'id':cat_codigo},--}}
+                {{--success:function(data){--}}
+                    {{--//console.log('success');--}}
 
-                    console.log(data);
+                    {{--console.log(data);--}}
 
-                    $('#pprecio_venta').val(data.ultimoprecio);
-                    $('#pidarticulo').val(data.codigo);
-                    $('#pidarticuloidarticulo').val(data.idarticulo);
-                    $('#pidarticulonombre').val(data.nombre);
-                },
-                error:function(){
-                alert('NO')
-                }
-            });
+                    {{--$('#pprecio_venta').val(data.ultimoprecio);--}}
+                    {{--$('#pidarticulo').val(data.codigo);--}}
+                    {{--$('#pidarticuloidarticulo').val(data.idarticulo);--}}
+                    {{--$('#pidarticulonombre').val(data.nombre);--}}
+                {{--},--}}
+                {{--error:function(){--}}
+                {{--alert('NO')--}}
+                {{--}--}}
+            {{--});--}}
+        {{--});--}}
+
+        var path ="{{ route('autocomplete') }}";
+        $("#pidarticulo").typeahead({
+            minLength: 3,
+            autoSelect: true,
+            dataType: 'json',
+            source: function (query, process) {
+
+                return $.get(path, {query:query}, function (data) {
+                    var nombres = data.map(function (item) {
+                        return item.codigo + ' ' + item.nombre
+                    });
+                    return process(nombres);
+                })
+            },
+            updater:function (item,data) {
+                console.log(item)
+                //item = selected item
+                var input = item.split(' ')
+
+                $.ajax({
+                    type:'get',
+                    url:'{!!URL::to('buscarPrecioArticuloVentasPorCodigo')!!}',
+                    data:{'codigo':input[0]},
+                    success:function(data){
+                        //console.log('success');
+
+                        console.log(data);
+
+                        $('#pprecio_venta').val(data[0].precio_venta);
+                        $('#pidarticulo').val(data.codigo);
+                        $('#pidarticuloidarticulo').val(data.idarticulo);
+                        $('#pidarticulonombre').val(data.nombre);
+
+                    },
+                    error:function(){
+
+                    }
+                });
+
+                //dont forget to return the item to reflect them into input
+                return item;
+
+            }
+
         });
+
     });
     var cont = 0;
     total = 0;

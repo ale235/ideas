@@ -317,6 +317,18 @@ class ReportesController extends Controller
         return Redirect::to('reportes/grafico/detallestock');
     }
 
+    public function ventasPorDias(Request $request)
+    {
+
+        $collection = DB::table('venta as v')
+            ->whereBetween('v.fecha_hora', array($request->get('startDate'), $request->get('endDate')))
+//            ->orderBy('desc')
+            ->limit(10)
+            ->get();
+
+        return $collection;
+    }
+
 }
 
 //public function scopeBirthdays($query)

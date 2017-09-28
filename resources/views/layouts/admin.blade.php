@@ -223,6 +223,7 @@
 <!-- AdminLTE App -->
 <script src={{asset('js/app.min.js')}}></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.js"></script>
 
 
 </body>
