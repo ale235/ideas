@@ -49,13 +49,14 @@ class VentaController extends Controller
 
                 $date = $request->get('daterange');
                 $pieces = explode(" - ", $date);
+                $pieces[0]=$pieces[0] . ' 00:00:00';
+                $pieces[1]=$pieces[1] . ' 23:59:00';
 
                 $query = trim($request->get('searchText'));
                 $ventas = DB::table('venta as v')
                     ->join('persona as p', 'v.idcliente', '=', 'p.idpersona')
                     ->join('detalle_venta as dv', 'v.idventa', '=', 'dv.idventa')
                     ->select('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta','v.total_venta_real')
-//                ->where('v.num_comprobante', 'LIKE', '%'.$query.'%')
                     ->whereBetween('v.fecha_hora', array(new Carbon($pieces[0]), new Carbon($pieces[1])))
                     ->orderBy('v.idventa', 'desc')
                     ->groupBy('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta','v.total_venta_real')
@@ -298,7 +299,7 @@ class VentaController extends Controller
 
         //if our chosen id and products table prod_cat_id col match the get first 100 data
         //$request->id here is the id of our chosen option id
-        $articulo = DB::table('articulo')->where('idarticulo', '=', $request->id)->first();
+        $articulo = DB::table('articulo')->where('codigo', '=', $request->codigo)->first();
 
         $precio = DB::table('precio')
             ->where('idarticulo', '=', $articulo->idarticulo)
@@ -649,10 +650,13 @@ class VentaController extends Controller
         })->download('xls');
 
     }
+
     public function autocomplete(Request $request)
     {
-        $data = Articulo::select('nombre','codigo')->where('nombre','LIKE','%'.$request->get('query').'%')->get();
+        $data = Articulo::select('nombre','codigo','idarticulo','ultimoprecio')
+            ->where('nombre','LIKE','%'.$request->get('query').'%')
+            ->orwhere('codigo','LIKE','%'.$request->get('query').'%')
+            ->get();
         return response()->json($data);
     }
-
 }

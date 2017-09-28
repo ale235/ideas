@@ -29,7 +29,7 @@
                     {{--<option value="{{$articulo->idarticulo}}">{{$articulo->codigo}} {{$articulo->nombre}}</option>--}}
                 {{--@endforeach--}}
             {{--</select>--}}
-            <input  name="pidarticulo" id="pidarticulo" />
+            <input type="text" name="pidarticulo" id="pidarticulo"/>
             <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
             <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
         </div>
@@ -260,18 +260,18 @@
         }
     });
 
-    $(document).ready(function () {
-        $('input[name="daterange"]').daterangepicker(
-            {
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                locale: {
-                    format: 'DD/MM/YYYY',
-                    cancelLabel: 'Clear',
-                }
+    $('input[name="daterange"]').daterangepicker(
+        {
+            singleDatePicker: true,
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                cancelLabel: 'Clear',
             }
-        );
+        }
+    );
+
+    $(document).ready(function () {
        $('#bt_add').click(function () {
            agregar();
        });
@@ -376,6 +376,7 @@
                 {{--}--}}
             {{--});--}}
         {{--});--}}
+
         var path ="{{ route('autocomplete') }}";
         $("#pidarticulo").typeahead({
             minLength: 3,
@@ -385,22 +386,40 @@
 
                 return $.get(path, {query:query}, function (data) {
                     var nombres = data.map(function (item) {
-                        return item.nombre
+
+                        return item.codigo + ' ' + item.nombre
                     });
                     return process(nombres);
                 })
             },
-//            updater:function (item,data) {
-//                console.log(item)
-//                //item = selected item
-//                //do your stuff.
-//
-//                //dont forget to return the item to reflect them into input
-//                return item;
-//
-//            }
+            updater:function (item,data) {
+                console.log(item)
+                //item = selected item
+                var input = item.split(' ')
 
+                $.ajax({
+                    type:'get',
+                    url:'{!!URL::to('buscarPrecioArticuloVentasPorCodigo')!!}',
+                    data:{'codigo':input[0]},
+                    success:function(data){
+                        //console.log('success');
+
+                        console.log(data);
+
+                        $('#pprecio_venta').val(data[0].precio_venta);
+                        $('#pidarticulo').val(data.codigo);
+                        $('#pidarticuloidarticulo').val(data.idarticulo);
+                        $('#pidarticulonombre').val(data.nombre);
+
+                    },
+                    error:function(){
+
+                    }
+                });
+
+            }
         });
+
     });
     var cont = 0;
     total = 0;

@@ -152,7 +152,7 @@
                 <div class="panel panel-info">
                     <div class="panel-body">
                         <a href="{{URL::action('ReportesController@exportVentasPorProducto')}}"><button class="btn btn-success">Exportar<i class="fa fa-file-excel-o"></i></button></a>
-                        <div id="revenue-chart" style="position: relative; height: 300px;"></div>
+                        <div id="myChart"></div>
                     </div>
                 </div>
             </div>
@@ -181,6 +181,8 @@
             <!-- right col -->
         </div>
         <!-- /.row (main row) -->
+        <input id="daterange" />
+        <div id="ventachart"></div>
 
     </section>
     </body>
@@ -188,6 +190,80 @@
 
 @endsection
 @push('scripts')
+<script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+<script>
+    $.ajax({
+        type: 'get',
+        url: '{!!URL::to('ventasPorProductos')!!}',
+        success: function (data) {
+            console.log(data);
+            var labels = data.map(function (x) {
+                return x.nombre;
+            });
+            var dataChart = data.map(function (x) {
+                return parseInt(x.cantidadTotal);
+            });
+            zingchart.render({
+                id: 'myChart',
+                data: {
+                    type: "bar",
+                    scaleX: {
+                        label: {
+                            text: "Productos más vendidos"
+                        },
+                        labels: labels
+                    },
+                    series: [{
+                        values: dataChart
+                    }]
+                }
+            });
+        },
+        error: function () {
+
+        }
+    });
+
+</script>
+<script>
+    $('#daterange').daterangepicker();
+    $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+        console.log(picker.startDate.format('YYYY-MM-DD'));
+        console.log(picker.endDate.format('YYYY-MM-DD'));
+        $.ajax({
+            type: 'get',
+            url: '{!!URL::to('ventasPorDias')!!}',
+            data:{'startDate':picker.startDate.format('YYYY-MM-DD'),'endDate':picker.endDate.format('YYYY-MM-DD')},
+            success: function (data) {
+                console.log(data);
+                var labels = data.map(function (x) {
+                    return x.nombre;
+                });
+                var dataChart = data.map(function (x) {
+                    return parseInt(x.cantidadTotal);
+                });
+                zingchart.render({
+                    id: 'ventachart',
+                    data: {
+                        type: "line",
+                        scaleX: {
+                            label: {
+                                text: "Productos más vendidos"
+                            },
+                            labels: labels
+                        },
+                        series: [{
+                            values: dataChart
+                        }]
+                    }
+                });
+            },
+            error: function () {
+
+            }
+        });
+    });
+</script>
 <script>
     $(document).ready(function () {
         $.ajax({

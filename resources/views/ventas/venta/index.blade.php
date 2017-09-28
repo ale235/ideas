@@ -53,10 +53,6 @@
 @push ('scripts')
 <script>
     $(document).ready(function () {
-//        var start = moment();
-//        var end = moment();
-//        var d = new Date();
-//        d.setHours(0,0,0);
         $('input[name="daterange"]').daterangepicker(
             {
 
@@ -66,14 +62,9 @@
 //                    defaultDate: d
                 },
 
-//                startDate: start,
-//                endDate: end,
         }
         );
 
-    });
-/*    $('#bt_add').click(function () {
-        console.log($('input[name="daterange"]').val())
     });
     var val = getURLParameter('daterange');
     $('#daterange').val(val);
@@ -82,7 +73,6 @@
         return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
     }
 
-*/
 
 
 </script>
