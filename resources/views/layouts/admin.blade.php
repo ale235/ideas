@@ -19,6 +19,9 @@
 
     <link rel="stylesheet" href={{asset('css/daterangepicker.css')}}>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+
+
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href={{asset('css/_all-skins.min.css')}}>

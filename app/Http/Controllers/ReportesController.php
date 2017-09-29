@@ -326,7 +326,18 @@ class ReportesController extends Controller
             ->limit(10)
             ->get();
 
-        return $collection;
+        $something = DB::table('venta as v')
+            ->whereBetween('v.fecha_hora', array($request->get('startDate'), $request->get('endDate')))
+            ->get(['idventa','fecha_hora','total_venta_real'])
+            ->groupBy(function($date) {
+            return Carbon::parse($date->fecha_hora)->format('y-m');
+        });
+
+        $test =[[50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60],
+                [60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,50,70,60,50,70,60,34],
+                [70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,70]] ;
+
+        return $something;
     }
 
 }
