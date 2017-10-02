@@ -42,19 +42,19 @@
                 <a href="{{ url('almacen/categoria/create?lastPage=art') }}"><button type="button" class="btn btn-success">Nueva Categoría</button></a>
             </h3>
         </div>
-        <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                <label>Proveedores</label>
-                <select name="idproveedores" class="form-control">
-                    @foreach($proveedores as $prov)
-                        <option value="{{$prov->idpersona}}">{{$prov->codigo}}</option>
-                    @endforeach
-                </select>
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-            <h3>
-                <a href="{{ url('compras/proveedor/create?lastPage=art') }}"><button type="button" class="btn btn-success">Nuevo Proveedor</button></a>
-            </h3>
-        </div>
+        {{--<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">--}}
+                {{--<label>Proveedores</label>--}}
+                {{--<select name="idproveedores" class="form-control">--}}
+                    {{--@foreach($proveedores as $prov)--}}
+                        {{--<option value="{{$prov->idpersona}}">{{$prov->codigo}}</option>--}}
+                    {{--@endforeach--}}
+                {{--</select>--}}
+        {{--</div>--}}
+        {{--<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">--}}
+            {{--<h3>--}}
+                {{--<a href="{{ url('compras/proveedor/create?lastPage=art') }}"><button type="button" class="btn btn-success">Nuevo Proveedor</button></a>--}}
+            {{--</h3>--}}
+        {{--</div>--}}
         <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
                 <label for="codigo">Codigo</label>
                 <input type="text" name="codigo" required value="{{$articulo->codigo}}" class="form-control">
@@ -62,7 +62,7 @@
         @if (Auth::user()->role == 1)
             <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
                 <label for="codigo">Stock</label>
-                <input type="text" name="codigo" required value="{{$articulo->stock}}" class="form-control">
+                <input type="text" name="pcantidad" required value="{{$articulo->stock}}" class="form-control">
             </div>
         @endif
 

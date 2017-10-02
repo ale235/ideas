@@ -29,7 +29,10 @@
                     {{--<option value="{{$articulo->idarticulo}}">{{$articulo->codigo}} {{$articulo->nombre}}</option>--}}
                 {{--@endforeach--}}
             {{--</select>--}}
-            <input type="text" name="pidarticulo" id="pidarticulo"/>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-barcode"></i></span>
+                <input type="text" name="pidarticulo" id="pidarticulo"/>
+            </div>
             <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
             <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
         </div>
@@ -202,6 +205,12 @@
 
             {!! Form::close()!!}
 @push ('scripts')
+<style>
+    #scrollable-dropdown-menu .tt-dropdown-menu {
+        max-height: 150px;
+        overflow-y: auto;
+    }
+</style>
 <script>
 
     var form = $('#myForm'),

@@ -330,7 +330,7 @@ class ReportesController extends Controller
             ->whereBetween('v.fecha_hora', array($request->get('startDate'), $request->get('endDate')))
             ->get(['idventa','fecha_hora','total_venta_real'])
             ->groupBy(function($date) {
-            return Carbon::parse($date->fecha_hora)->format('y-m');
+            return Carbon::parse($date->fecha_hora)->format('y-m-d');
         });
 
         $test =[[50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60],
@@ -338,6 +338,24 @@ class ReportesController extends Controller
                 [70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,50,70,60,70]] ;
 
         return $something;
+    }
+
+    public function ventasPorProductosPorFecha(Request $request)
+    {
+
+        $collection = DB::table('detalle_venta as v')
+            ->join('articulo as a','a.idarticulo','=','v.idarticulo')
+            ->join('venta as vv','vv.idventa','=','v.idventa')
+            ->select('a.nombre',DB::raw('SUM(v.cantidad) as cantidadTotal'))
+            ->where('a.estado','=','Activo')
+            ->whereBetween('vv.fecha_hora', array($request->get('startDate'), $request->get('endDate')))
+            ->groupBy('a.nombre')
+            ->orderBy('cantidadTotal','desc')
+//            ->orderBy('desc')
+            ->limit(10)
+            ->get();
+
+        return $collection;
     }
 
 }

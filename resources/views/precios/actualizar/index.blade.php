@@ -159,15 +159,17 @@
                 //console.log('success');
 
                 console.log(data);
-
-                //console.log(data.length);
-                op+='<option value="0" selected disabled>Elegí un artículo</option>';
-                for(var i=0;i<data.length;i++){
-                    op+='<option value="'+data[i].idarticulo+'">'+data[i].nombre+'</option>';
+                if(data.length !=0){
+                    //console.log(data.length);
+                    op+='<option value="0" selected disabled>Elegí un artículo</option>';
+                    for(var i=0;i<data.length;i++){
+                        op+='<option value="'+data[i].idarticulo+'">'+data[i].nombre+'</option>';
+                    }
+                    $('#pidarticulo').html(" ");
+                    $('#pidarticulo').append(op);
+                    $('#pidarticulo').selectpicker('refresh');
                 }
-                $('#pidarticulo').html(" ");
-                $('#pidarticulo').append(op);
-                $('#pidarticulo').selectpicker('refresh');
+
             },
             error:function(){
 
@@ -193,7 +195,7 @@
                         '</tr>';
 
                     $('#detalles1').append(fila);
-                    $('#pidarticulo').attr('disabled',true);
+                    //$('#pidarticulo').attr('disabled',true);
                     $('.lista-proveedores').attr('disabled',true);
                 },
                 error:function(){

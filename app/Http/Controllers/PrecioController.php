@@ -37,6 +37,7 @@ class PrecioController extends Controller
 
     public function store(Request $request)
     {
+        //dd($request);
         try
         {
             DB::beginTransaction();
@@ -46,9 +47,10 @@ class PrecioController extends Controller
 //            $precio->precio = $request->get('pporcentaje_venta');
 //            $precio->fecha=$mytime->toDateTimeString();
 //            $precio->save();
+            //dd($request);
             if($request->get('pidarticulo') != null && $request->get('pidarticulo') != ''){
 
-                dd($request);
+    //            dd($request);
                 $idarticulo = $request->get('pidarticulo');
                 $porcentaje = $request->get('nuevo_porcentaje1');
                 $mytime= Carbon::now('America/Argentina/Buenos_Aires');

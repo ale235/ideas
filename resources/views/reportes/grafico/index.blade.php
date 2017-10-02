@@ -21,7 +21,7 @@
     <section class="content">
         <!-- Small boxes (Stat box) -->
         <div class="row">
-            <div class="col-lg-3 col-xs-6">
+            <div class="col-lg-4 col-xs-6">
                 <!-- small box -->
                 <div class="small-box bg-aqua">
                     <div class="inner">
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
+            <div class="col-lg-4 col-xs-6">
                 <!-- small box -->
                 <div class="small-box bg-green">
                     <div class="inner">
@@ -100,7 +100,7 @@
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
+            <div class="col-lg-4 col-xs-6">
                 <!-- small box -->
                 <div class="small-box bg-yellow">
                     <div class="inner">
@@ -115,7 +115,7 @@
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
+            <div style="display: none" class="col-lg-3 col-xs-6">
                 <!-- small box -->
                 <div class="small-box bg-red">
                     <div class="inner">
@@ -184,20 +184,20 @@
     </section>
     </body>
     <input id="daterange" />
-    <div id="ventachart"></div>
-    <div style="text-align:center;">
-        <label for="from">From</label>
-        <input type="text" id="from" name="from" readonly="readonly" />
-        <label for="to">to</label>
-        <input type="text" id="to" name="to" readonly="readonly"  />
-        <input type="button" id="btnShow" value="Show" />
-    </div>
+    {{--<div id="ventachart"></div>--}}
+    {{--<div style="text-align:center;">--}}
+        {{--<label for="from">From</label>--}}
+        {{--<input type="text" id="from" name="from" readonly="readonly" />--}}
+        {{--<label for="to">to</label>--}}
+        {{--<input type="text" id="to" name="to" readonly="readonly"  />--}}
+        {{--<input type="button" id="btnShow" value="Show" />--}}
+    {{--</div>--}}
     </html>
 
 @endsection
 @push('scripts')
 <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>--}}
 <script>
     $.ajax({
         type: 'get',
@@ -231,111 +231,7 @@
         }
     });
 
-</script>
-<style>
-    .ranges li:last-child { display: none; }
-
-    .ui-datepicker-calendar {
-        display: none;
-    }
-</style>
-<script>
-    $("#from, #to").datepicker({
-        changeMonth: true,
-        changeYear: true,
-        showButtonPanel: true,
-        dateFormat: 'yy-m-d',
-        onClose: function(dateText, inst) {
-            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-            $(this).datepicker('setDate', new Date(year, month, 1));
-        },
-        beforeShow: function(input, inst) {
-            if ((datestr = $(this).val()).length > 0) {
-                year = datestr.substring(datestr.length - 4, datestr.length);
-                month = jQuery.inArray(datestr.substring(0, datestr.length - 5), $(this).datepicker('option', 'monthNames'));
-                $(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
-                $(this).datepicker('setDate', new Date(year, month, 1));
-            }
-            var other = this.id == "from" ? "#to" : "#from";
-            var option = this.id == "from" ? "maxDate" : "minDate";
-            if ((selectedDate = $(other).val()).length > 0) {
-                year = selectedDate.substring(selectedDate.length - 4, selectedDate.length);
-                month = jQuery.inArray(selectedDate.substring(0, selectedDate.length - 5), $(this).datepicker('option', 'monthNames'));
-                $(this).datepicker("option", option, new Date(year, month, 1));
-            }
-        }
-    });
-    $("#btnShow").click(function() {
-        if ($("#from").val().length == 0 || $("#to").val().length == 0) {
-            alert('All fields are required');
-        } else {
-
-
-            $.ajax({
-                type: 'get',
-                url: '{!!URL::to('ventasPorDias')!!}',
-                data:{'startDate':$("#from").val(),'endDate':$("#to").val()},
-                success: function (data) {
-                    console.log(data);
-                    var arr = [];
-                    var len = data.length;
-                    for (var i = 0; i < len; i++) {
-                        arr.push({
-                            values: data[i]
-                        });
-                    }
-                    zingchart.render({
-                        id: 'ventachart',
-                        data: {
-                            type: "line",
-                            scaleX: {
-                                label: {
-                                    text: "rgssg"
-                                },
-                                labels: [1,2,3,
-                                    4,
-                                    5,
-                                    6,
-                                    7,
-                                    8,
-                                    9,
-                                    10,
-                                    11,
-                                    12,
-                                    13,
-                                    14,
-                                    15,
-                                    16,
-                                    17,
-                                    18,
-                                    19,
-                                    20,
-                                    21,
-                                    22,
-                                    23,
-                                    24,
-                                    25,
-                                    26,
-                                    27,
-                                    28,
-                                    29,
-                                    30,
-                                    31
-                                ]
-                            },
-                            series: arr
-                        }
-                    });
-                },
-                error: function () {
-
-                }
-            });
-            alert('Selected Month Range :' + $("#from").val() + ' to ' + $("#to").val());
-        }
-    });
-    $(function() {
+    $(function () {
 
         var start = moment().subtract(29, 'days');
         var end = moment();
@@ -350,63 +246,41 @@
             }
         });
     });
-    $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+    $('#daterange').on('apply.daterangepicker', function (ev, picker) {
         console.log(picker.startDate.format('YYYY-MM-DD'));
         console.log(picker.endDate.format('YYYY-MM-DD'));
         $.ajax({
             type: 'get',
-            url: '{!!URL::to('ventasPorDias')!!}',
-            data:{'startDate':picker.startDate.format('YYYY-MM-DD'),'endDate':picker.endDate.format('YYYY-MM-DD')},
+            url: '{!!URL::to('ventasPorProductosPorFecha')!!}',
+            data: {'startDate': picker.startDate.format('YYYY-MM-DD'), 'endDate': picker.endDate.format('YYYY-MM-DD')},
             success: function (data) {
                 console.log(data);
-                var arr = [];
-                var len = data.length;
-                for (var i = 0; i < len; i++) {
-                    arr.push({
-                        values: data[i]
-                    });
-                }
-                zingchart.render({
-                    id: 'ventachart',
-                    data: {
-                        type: "line",
-                        scaleX: {
-                            label: {
-                                text: "rgssg"
-                            },
-                            labels: [1,2,3,
-                                4,
-                                5,
-                                6,
-                                7,
-                                8,
-                                9,
-                                10,
-                                11,
-                                12,
-                                13,
-                                14,
-                                15,
-                                16,
-                                17,
-                                18,
-                                19,
-                                20,
-                                21,
-                                22,
-                                23,
-                                24,
-                                25,
-                                26,
-                                27,
-                                28,
-                                29,
-                                30,
-                                31
-                            ]
-                        },
-                        series: arr
-                    }
+                var labels = data.map(function (x) {
+                    return x.nombre;
+                });
+                var dataChart = data.map(function (x) {
+                    return parseInt(x.cantidadTotal);
+                });
+//                zingchart.render({
+//                    id: 'myChart',
+//                    data: {
+//                        type: "bar",
+//                        scaleX: {
+//                            label: {
+//                                text: "Productos más vendidos"
+//                            },
+//                            labels: labels
+//                        },
+//                        series: [{
+//                            values: dataChart
+//                        }]
+//                    }
+//                });
+
+
+                zingchart.exec('myChart', 'setseriesvalues', {
+                    plotindex: 0,
+                    values: dataChart
                 });
             },
             error: function () {
@@ -415,6 +289,189 @@
         });
     });
 </script>
+{{--<style>--}}
+    {{--.ranges li:last-child { display: none; }--}}
+
+    {{--.ui-datepicker-calendar {--}}
+        {{--display: none;--}}
+    {{--}--}}
+{{--</style>--}}
+{{--<script>--}}
+    {{--$("#from, #to").datepicker({--}}
+        {{--changeMonth: true,--}}
+        {{--changeYear: true,--}}
+        {{--showButtonPanel: true,--}}
+        {{--dateFormat: 'yy-m-d',--}}
+        {{--onClose: function(dateText, inst) {--}}
+            {{--var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();--}}
+            {{--var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();--}}
+            {{--$(this).datepicker('setDate', new Date(year, month, 1));--}}
+        {{--},--}}
+        {{--beforeShow: function(input, inst) {--}}
+            {{--if ((datestr = $(this).val()).length > 0) {--}}
+                {{--year = datestr.substring(datestr.length - 4, datestr.length);--}}
+                {{--month = jQuery.inArray(datestr.substring(0, datestr.length - 5), $(this).datepicker('option', 'monthNames'));--}}
+                {{--$(this).datepicker('option', 'defaultDate', new Date(year, month, 1));--}}
+                {{--$(this).datepicker('setDate', new Date(year, month, 1));--}}
+            {{--}--}}
+            {{--var other = this.id == "from" ? "#to" : "#from";--}}
+            {{--var option = this.id == "from" ? "maxDate" : "minDate";--}}
+            {{--if ((selectedDate = $(other).val()).length > 0) {--}}
+                {{--year = selectedDate.substring(selectedDate.length - 4, selectedDate.length);--}}
+                {{--month = jQuery.inArray(selectedDate.substring(0, selectedDate.length - 5), $(this).datepicker('option', 'monthNames'));--}}
+                {{--$(this).datepicker("option", option, new Date(year, month, 1));--}}
+            {{--}--}}
+        {{--}--}}
+    {{--});--}}
+    {{--$("#btnShow").click(function() {--}}
+        {{--if ($("#from").val().length == 0 || $("#to").val().length == 0) {--}}
+            {{--alert('All fields are required');--}}
+        {{--} else {--}}
+
+
+            {{--$.ajax({--}}
+                {{--type: 'get',--}}
+                {{--url: '{!!URL::to('ventasPorDias')!!}',--}}
+                {{--data:{'startDate':$("#from").val(),'endDate':$("#to").val()},--}}
+                {{--success: function (data) {--}}
+                    {{--console.log(data);--}}
+                    {{--var arr = [];--}}
+                    {{--var len = data.length;--}}
+                    {{--for (var i = 0; i < len; i++) {--}}
+                        {{--arr.push({--}}
+                            {{--values: data[i]--}}
+                        {{--});--}}
+                    {{--}--}}
+                    {{--zingchart.render({--}}
+                        {{--id: 'ventachart',--}}
+                        {{--data: {--}}
+                            {{--type: "line",--}}
+                            {{--scaleX: {--}}
+                                {{--label: {--}}
+                                    {{--text: "rgssg"--}}
+                                {{--},--}}
+                                {{--labels: [1,2,3,--}}
+                                    {{--4,--}}
+                                    {{--5,--}}
+                                    {{--6,--}}
+                                    {{--7,--}}
+                                    {{--8,--}}
+                                    {{--9,--}}
+                                    {{--10,--}}
+                                    {{--11,--}}
+                                    {{--12,--}}
+                                    {{--13,--}}
+                                    {{--14,--}}
+                                    {{--15,--}}
+                                    {{--16,--}}
+                                    {{--17,--}}
+                                    {{--18,--}}
+                                    {{--19,--}}
+                                    {{--20,--}}
+                                    {{--21,--}}
+                                    {{--22,--}}
+                                    {{--23,--}}
+                                    {{--24,--}}
+                                    {{--25,--}}
+                                    {{--26,--}}
+                                    {{--27,--}}
+                                    {{--28,--}}
+                                    {{--29,--}}
+                                    {{--30,--}}
+                                    {{--31--}}
+                                {{--]--}}
+                            {{--},--}}
+                            {{--series: arr--}}
+                        {{--}--}}
+                    {{--});--}}
+                {{--},--}}
+                {{--error: function () {--}}
+
+                {{--}--}}
+            {{--});--}}
+            {{--alert('Selected Month Range :' + $("#from").val() + ' to ' + $("#to").val());--}}
+        {{--}--}}
+    {{--});--}}
+    {{--$(function() {--}}
+
+        {{--var start = moment().subtract(29, 'days');--}}
+        {{--var end = moment();--}}
+
+        {{--$('#daterange').daterangepicker({--}}
+            {{--startDate: start,--}}
+            {{--endDate: end,--}}
+            {{--ranges: {--}}
+                {{--'Last 30 Days': [moment().subtract(29, 'days'), moment()],--}}
+                {{--'This Month': [moment().startOf('month'), moment().endOf('month')],--}}
+                {{--'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]--}}
+            {{--}--}}
+        {{--});--}}
+    {{--});--}}
+    {{--$('#daterange').on('apply.daterangepicker', function(ev, picker) {--}}
+        {{--console.log(picker.startDate.format('YYYY-MM-DD'));--}}
+        {{--console.log(picker.endDate.format('YYYY-MM-DD'));--}}
+        {{--$.ajax({--}}
+            {{--type: 'get',--}}
+            {{--url: '{!!URL::to('ventasPorDias')!!}',--}}
+            {{--data:{'startDate':picker.startDate.format('YYYY-MM-DD'),'endDate':picker.endDate.format('YYYY-MM-DD')},--}}
+            {{--success: function (data) {--}}
+                {{--console.log(data);--}}
+                {{--var arr = [];--}}
+                {{--var len = data.length;--}}
+                {{--for (var i = 0; i < len; i++) {--}}
+                    {{--arr.push({--}}
+                        {{--values: data[i]--}}
+                    {{--});--}}
+                {{--}--}}
+                {{--zingchart.render({--}}
+                    {{--id: 'ventachart',--}}
+                    {{--data: {--}}
+                        {{--type: "line",--}}
+                        {{--scaleX: {--}}
+                            {{--label: {--}}
+                                {{--text: "rgssg"--}}
+                            {{--},--}}
+                            {{--labels: [1,2,3,--}}
+                                {{--4,--}}
+                                {{--5,--}}
+                                {{--6,--}}
+                                {{--7,--}}
+                                {{--8,--}}
+                                {{--9,--}}
+                                {{--10,--}}
+                                {{--11,--}}
+                                {{--12,--}}
+                                {{--13,--}}
+                                {{--14,--}}
+                                {{--15,--}}
+                                {{--16,--}}
+                                {{--17,--}}
+                                {{--18,--}}
+                                {{--19,--}}
+                                {{--20,--}}
+                                {{--21,--}}
+                                {{--22,--}}
+                                {{--23,--}}
+                                {{--24,--}}
+                                {{--25,--}}
+                                {{--26,--}}
+                                {{--27,--}}
+                                {{--28,--}}
+                                {{--29,--}}
+                                {{--30,--}}
+                                {{--31--}}
+                            {{--]--}}
+                        {{--},--}}
+                        {{--series: arr--}}
+                    {{--}--}}
+                {{--});--}}
+            {{--},--}}
+            {{--error: function () {--}}
+
+            {{--}--}}
+        {{--});--}}
+    {{--});--}}
+{{--</script>--}}
 <script>
     $(document).ready(function () {
         $.ajax({
