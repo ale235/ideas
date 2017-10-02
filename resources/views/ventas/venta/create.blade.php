@@ -31,28 +31,28 @@
             {{--</select>--}}
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-barcode"></i></span>
-                <input type="text" name="pidarticulo" id="pidarticulo"/>
+                <input type="text" name="pidarticulo" id="pidarticulo" class="form-control"/>
             </div>
             <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
             <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
         </div>
         </div>
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            <div class="form-group">
+            <div class="input-group">
                 <label for="cantidad">Cantidad</label>
                 <input type="number" name="pcantidad" id="pcantidad" class="form-control" onkeyup="actualizar()"
                        placeholder="Cantidad">
             </div>
         </div>
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            <div class="form-group">
+            <div class="input-group">
                 <label for="precio_venta">Precio por Unidad</label>
                 <input type="number" name="pprecio_venta" id="pprecio_venta" class="form-control"
                        onkeypress="return valida(event)" onkeyup="actualizar()" placeholder="Precio de Venta" disabled>
             </div>
         </div>
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            <div class="form-group">
+            <div class="inpu-group">
                 <label for="pprecio_venta_cantidad">Precio * Cantidad</label>
                 <input type="number" name="pprecio_venta_cantidad" id="pprecio_venta_cantidad" class="form-control"
                        placeholder="Precio * Cantidad" disabled>
@@ -60,6 +60,7 @@
         </div>
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             <div class="form-group">
+                <label>Agregar Producto</label>
                 <button type="button" id="bt_add" class="btn btn-primary">Agregar</button>
             </div>
         </div>

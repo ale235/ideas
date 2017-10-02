@@ -1,110 +1,107 @@
 @extends ('layouts.admin')
 @section ('contenido')
 
-    <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-            <h3>
-                Nuevo Artículo
-            </h3>
-            @if(count($errors)>0)
-                <div class="alert alert-danger">
-                    <u>
-                        @foreach($errors->all() as $error)
-                            <li>{{$error}}</li>
+    <!-- Input addon -->
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Nuevo Artículo</h3>
+        </div>
+        @if(count($errors)>0)
+            <div class="alert alert-danger">
+                <u>
+                    @foreach($errors->all() as $error)
+                        <li>{{$error}}</li>
+                    @endforeach
+                </u>
+            </div>
+        @endif
+        {!! Form::open(array('url'=>'almacen/articulo', 'method'=>'POST', 'autocomplete'=>'off', 'files'=>'true', 'novalidate' => 'novalidate'))!!}
+        {{Form::token()}}
+        <div class="box box-body">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Proveedor</span>
+                    <select  name="idproveedores" id="idproveedores"  class="form-control selectpicker" data-live-search="true">
+                        <option selected>Seleccione el Proveedor</option>
+                        @foreach($proveedores as $prov)
+                            <option value="{{$prov->codigo}}">{{$prov->codigo}}</option>
                         @endforeach
-                    </u>
+                    </select>
+                    <input type="hidden" name="idproveedorsolo" id="idproveedorsolo" value="{{old('idproveedorsolo')}}">
+                    <span class="input-group-btn">
+                        <a href="{{ url('compras/proveedor/create?lastPage=art') }}"><button type="button" class="btn btn-info btn-flat">Nuevo Proveedor</button></a>
+                    </span>
                 </div>
-            @endif
-        </div>
-    </div>
-    {!! Form::open(array('url'=>'almacen/articulo', 'method'=>'POST', 'autocomplete'=>'off', 'files'=>'true', 'novalidate' => 'novalidate'))!!}
-    {{Form::token()}}
-    <div class="row">
-        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
-            {{--<div class="from-group">--}}
-                <label for="nombre">Nombre</label>
-                <input type="text" name="nombre"  value="{{old('nombre')}}" class="form-control" placeholder="Nombre...">
-            {{--</div>--}}
-        </div>
-        <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-            {{--<div class="form-group">--}}
-                <label>Categoria</label>
-                <select name="idcategoria" class="form-control">
-                    @foreach($categorias as $cat)
-                        <option value="{{$cat->idcategoria}}">{{$cat->nombre}}</option>
-                    @endforeach
-                </select>
-            {{--</div>--}}
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-            <h3>
-                <a href="{{ url('almacen/categoria/create?lastPage=art') }}"><button type="button" class="btn btn-success">Nueva Categoría</button></a>
-            </h3>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-            {{--<div class="form-group">--}}
-                <label>Proveedores</label>
-                <select name="idproveedores" id="idproveedores" class="form-control">
-                        <option selected>Seleccione el proveedor</option>
-                    @foreach($proveedores as $prov)
-                        <option value="{{$prov->codigo}}">{{$prov->codigo}}</option>
-                    @endforeach
-                </select>
-                <input type="hidden" name="idproveedorsolo" id="idproveedorsolo" value="{{old('idproveedorsolo')}}">
-            {{--</div>--}}
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-            <h3>
-                <a href="{{ url('compras/proveedor/create?lastPage=art') }}"><button type="button" class="btn btn-success">Nuevo Proveedor</button></a>
-            </h3>
-        </div>
-        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
-            {{--<div class="from-group">--}}
-                <label for="stock">Codigo</label>
+            </div>
+            <br>
+
+            <div class="input-group">
+                <span class="input-group-addon">Código</span>
                 <input type="text" name="codigo" id="codigo" value="{{old('codigo')}}" class="form-control" placeholder="Código...">
-            {{--</div>--}}
-        </div>
-    </div>
-    <hr size="20" />
+            </div>
+            <br>
 
-    <div class="row">
-        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            <div class="input-group">
+                <span class="input-group-addon">Nombre</span>
+                <input type="text" name="nombre" id="nombre" value="{{old('nombre')}}" class="form-control" placeholder="Nombre">
+            </div>
+            <br>
+
             <div class="form-group">
-                <label for="cantidad">Cantidad</label>
+                <div class="input-group">
+                    <span class="input-group-addon">Categoría</span>
+                    <select name="idcategoria" id="idcategoria" class="form-control selectpicker" data-live-search="true">
+                        @foreach($categorias as $cat)
+                            <option value="{{$cat->idcategoria}}">{{$cat->nombre}}</option>
+                        @endforeach
+                    </select>
+                    <span class="input-group-btn">
+                        <a href="{{ url('almacen/categoria/create?lastPage=art') }}"><button type="button" class="btn btn-info btn-flat">Nueva Categoría</button></a>
+                    </span>
+                </div>
+            </div>
+            <br>
+
+            <hr size="60" />
+
+            <div class="input-group">
+                <span id="inputdelexistencia" style="display: none" class="input-group-addon">Hay <span id="existencia"></span> artículos en Stock</span>
                 <input type="number" name="pcantidad" id="pcantidad" class="form-control" onkeyup="actualizar()" placeholder="Cantidad">
+                <span class="input-group-addon">Cantidad de Artículos a Ingresar al Stock</span>
             </div>
-        </div>
-        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            <div class="form-group">
-                <label for="precio_compra_costo">Precio de Compra</label>
-                <input type="number" name="pprecio_compra_costo" id="pprecio_compra_costo" class="form-control" onkeyup="actualizar()" placeholder="Precio de Compra">
-            </div>
-        </div>
-        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            <div class="form-group">
-                <label for="porcentaje_venta">Porcentaje de venta</label>
-                <input type="number" name="pporcentaje_venta" id="pporcentaje_venta" class="form-control" onkeypress="return valida(event)" onkeyup="actualizar()" placeholder="Porcentaje de Venta">
-            </div>
-        </div>
-        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            <div class="form-group">
-                <label for="precio_venta">Precio de venta Esperado</label>
-                <input type="number" name="pprecio_venta_esperado" id="pprecio_venta_esperado" class="form-control">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-            <div class="form-group">
-                <button class="btn btn-primary" type="submit">Guardar</button>
-                <button class="btn btn-danger" type="reset">Reset</button>
-            </div>
-        </div>
-    </div>
+            <br>
 
-    {!! Form::close()!!}
+            <div class="input-group">
+                <span class="input-group-addon">$</span>
+                <input type="number" name="pprecio_compra_costo" id="pprecio_compra_costo" class="form-control" onkeyup="actualizar()" placeholder="Costo">
+                <span class="input-group-addon">Costo del Artículo</span>
+            </div>
+            <br>
+
+            <div class="input-group">
+                <span class="input-group-addon">%</span>
+                <input type="number" name="pporcentaje_venta" id="pporcentaje_venta" class="form-control" onkeypress="return valida(event)" onkeyup="actualizar()" placeholder="Porcentaje de Venta">
+                <span class="input-group-addon">Porcentaje de Venta del Artículo</span>
+            </div>
+            <br>
+
+            <div class="input-group">
+                <span class="input-group-addon">$</span>
+                <input type="number" name="pprecio_venta_esperado" id="pprecio_venta_esperado"  class="form-control" placeholder="Precio Esperado">
+                <span class="input-group-addon">Precio Esperado (Es el cálculo del Costo x el Porcentaje de Venta)</span>
+            </div>
+            <br>
+            <!-- /input-group -->
+        </div>
+
+        <!-- /.box-body -->
+        <div class="box box-footer">
+            <button type="reset" class="btn btn-default">Cancelar</button>
+            <button type="submit" class="btn btn-info pull-right">Cargar Artículo</button>
+        </div>
+        {!! Form::close()!!}
+    </div>
+    <!-- /.box -->
 @endsection
 
 @push ('scripts')
