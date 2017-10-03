@@ -83,4 +83,9 @@ Route::get('/proveedorQueMasVende/{daterange}','VentaController@proveedorQueMasV
 Route::get('autocomplete',array('as'=>'autocomplete', 'uses'=>'VentaController@autocomplete'));
 Route::get('/ventasPorDias','ReportesController@ventasPorDias');
 Route::get('/ventasPorProductosPorFecha','ReportesController@ventasPorProductosPorFecha');
+
+Route::get('/agregarArticuloParaIngreso','IngresoController@agregarArticuloParaIngreso');
+
+Route::get('autocompleteIngresoPorProveedor',array('as'=>'autocompleteIngresoPorProveedor', 'uses'=>'IngresoController@autocompleteIngresoPorProveedor'));
+
 Auth::routes();

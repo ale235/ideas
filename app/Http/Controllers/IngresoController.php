@@ -262,4 +262,44 @@ class IngresoController extends Controller
         return response()->json($articulo);
     }
 
+    public function agregarArticuloParaIngreso (Request $request) {
+        $numero = Articulo::where('proveedor',$request->get('prov'))->count();
+
+            try{
+                DB::beginTransaction();
+                $articulo = new Articulo;
+                $articulo->idcategoria = 1;
+                $articulo->codigo = $request->get('prov'). str_pad($numero, 5, "0",  STR_PAD_LEFT);
+                $articulo->proveedor = $request->get('prov');
+                $articulo->nombre = $request->get('nombre');
+                $articulo->stock = 0;
+                $articulo->estado = 'Activo';
+
+                if(Input::hasFile('imagen'))
+                {
+                    $file=Input::file('imagen');
+                    $file->move(public_path().'imagenes/articulos/', $file->getClientOriginalName());
+                    $articulo->imagen = $file->getClientOriginalName();
+                }
+                $articulo->save();
+                DB::commit();
+            }
+            catch(\Exception $e)
+            {
+                DB::rollback();
+            }
+
+        return $articulo;
+
+    }
+
+    public function autocompleteIngresoPorProveedor(Request $request)
+    {
+        $data = Articulo::select('nombre','codigo','idarticulo','ultimoprecio')
+            ->where('nombre','LIKE','%'.$request->get('query').'%')
+            ->where('proveedor','=',$request->get('prov'))
+            ->get();
+        return response()->json($data);
+    }
+
 }

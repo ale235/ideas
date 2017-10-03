@@ -32,11 +32,17 @@
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+                            <div class="form-group has-success">
+                                <label class="control-label" for="inputSuccess"><i class="fa fa-check"></i> Nombre del artículo -> Acá se coloca un nombre para saber si el producto existe o no. En caso de que no exista, una vez escrito el nombre hacer click en Agregar Producto. Luego buscarlo en el campo de "Código del Artículo"  <br> SIEMPRE cargar todos los artículos de un proveedor, guardar y despues hacer otro.</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="inputSuccess" placeholder="Nombre del artículo" disabled>
+                                    <span id="bt_add_product" class="input-group-addon btn" disabled>Agregar Producto</span>
+                                </div>
+                            </div>
                                 <div class="form-group">
                                     <label>Código del artículo</label>
-                                    <div class="input-group ">
-                                        <select name="pidarticulo" id="pidarticulo" class="form-control">
+                                    <div class="input-group">
+                                        <select name="pidarticulo" id="pidarticulo" class="selectpicker" data-live-search="true">
                                             <option value="0" selected disabled>Elegí un artículo</option>
                                         </select>
                                         {{--<input type="text" class="form-control" name="pidarticulo" id="pidarticulo"/>--}}
@@ -45,7 +51,7 @@
                                         <input type="hidden" class="form-control" name="pidproveedor" id="pidproveedor"/>
                                     </div>
                                 </div>
-                            </div>
+
                             <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
                                 <div class="form-group">
                                     <label for="cantidad">Cantidad</label>
@@ -150,7 +156,77 @@
                         }
                         div.parent().parent().parent().parent().parent().find('#pidarticulo').html(" ");
                         div.parent().parent().parent().parent().parent().find('#pidarticulo').append(op);
+                        $('#pidarticulo').selectpicker('refresh');
+                        $('#inputSuccess').attr('disabled',false);
+                        $('#bt_add_product').attr('disabled',false);
                     }
+
+                },
+                error:function(){
+
+                }
+            });
+        });
+
+        var path ="{{ route('autocompleteIngresoPorProveedor') }}";
+        $("#inputSuccess").typeahead({
+            minLength: 3,
+            autoSelect: true,
+            dataType: 'json',
+            source: function (query, process) {
+
+                return $.get(path, {query:query, prov: $(".lista-proveedores option:selected" ).text()}, function (data) {
+                    var nombres = data.map(function (item) {
+
+                        return item.nombre
+                    });
+                    return process(nombres);
+                })
+            },
+            updater:function (item,data) {
+
+            }
+        });
+
+        $(document).on('click','#bt_add_product',function(){
+            // console.log("hmm its change");
+
+            var cat_prov=$('.lista-proveedores').find("option:selected").text();
+            var nombre_prov=$('#inputSuccess').val();
+
+            $.ajax({
+                type:'get',
+                url:'{!!URL::to('agregarArticuloParaIngreso')!!}',
+                data:{'prov':cat_prov, 'nombre':nombre_prov},
+                success:function(data){
+                    //console.log('success');
+                    $.ajax({
+                        type:'get',
+                        url:'{!!URL::to('buscarArticuloPorProveedor')!!}',
+                        data:{'codigo':data.proveedor},
+                        success:function(data){
+                            //console.log('success');
+                            var op=" ";
+                            if(data.length != 0){
+                                console.log(data);
+
+                                //console.log(data.length);
+                                op+='<option value="0" selected disabled>Elegí un artículo</option>';
+                                for(var i=0;i<data.length;i++){
+                                    op+='<option value="'+data[i].idarticulo+'">'+data[i].nombre+'</option>';
+                                }
+                                $('#pidarticulo').html(" ");
+                                $('#pidarticulo').append(op);
+                                $('#pidarticulo').selectpicker('refresh');
+                                $('#inputSuccess').attr('disabled',false);
+                                $('#bt_add_product').attr('disabled',false);
+                            }
+
+                        },
+                        error:function(){
+
+                        }
+                    });
 
                 },
                 error:function(){
@@ -248,7 +324,7 @@
         $('#pprecio_compra_costo').val("");
         $('#pporcentaje_venta').val("");
         $('#pprecio_venta_esperado').val("");
-        $('#pidarticulo').val("");
+        $('#pidarticulo').val(" ");
     }
 
     function evaluar()
