@@ -138,7 +138,7 @@
     var anterior = 0;
     $(document).on('change', '#porcentajeporcolumna', function () {
         $('#detalles > tbody  > tr').each(function(data){
-            var num = parseInt($($(this).find('td').eq(4)[0]).children().val());
+            var num = parseInt($($(this).find('td').eq(7)[0]).children().val());
             $($(this).find('td').eq(4)[0]).children().val(Math.round(num + num*$('#porcentajeporcolumna').val()/100));
             var costo = num + num*$('#porcentajeporcolumna').val()/100;
             var porcentaje_venta = $($(this).find('td').eq(5)[0]).children().val();
@@ -272,6 +272,7 @@
                     '<td><input type="number" name="nuevo_precio_compra[]" value="'+data.precio_compra+'"></td>' +
                     '<td><input type="number" id="nuevo_porcentaje[]" name="nuevo_porcentaje[]" value='+data.porcentaje+'></td>' +
                     '<td><label type="number">$'+data.precio_venta+'</label></td>' +
+                    '<td><input type="hidden" value="'+data.precio_compra+'"></td>' +
                     '</tr>';
                 cont++;
 
