@@ -48,7 +48,7 @@
             <div class="input-group">
                 <label for="precio_venta">Precio por Unidad</label>
                 <input type="number" name="pprecio_venta" id="pprecio_venta" class="form-control"
-                       onkeypress="return valida(event)" onkeyup="actualizar()" placeholder="Precio de Venta" disabled>
+                       onkeypress="return valida(event)" onkeyup="actualizar()" placeholder="Precio de Venta">
             </div>
         </div>
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">

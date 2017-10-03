@@ -102,10 +102,10 @@
                                 <th>Opciones</th>
                                 <th>Código</th>
                                 <th>Nombre</th>
-                                <th>Porcentaje de venta actual</th>
-                                <th>Costo Actual</th>
-                                <th>Precio de venta actial</th>
-                                <th>Nuevo porcentaje</th>
+                                <th>% de venta actual</th>
+                                <th>Costo Actual <br> <input name="porcentajeporcolumna" id="porcentajeporcolumna" type="number" placeholder="Porcentaje a esta columna"></th>
+                                <th>Nuevo % para la venta</th>
+                                <th>Precio de venta actual</th>
                                 {{--<th>Subtotal</th>--}}
                                 </thead>
                                 <tfoot>
@@ -135,6 +135,28 @@
 @endsection
 @push ('scripts')
 <script>
+    var anterior = 0;
+    $(document).on('change', '#porcentajeporcolumna', function () {
+        $('#detalles > tbody  > tr').each(function(data){
+            var num = parseInt($($(this).find('td').eq(4)[0]).children().val());
+            $($(this).find('td').eq(4)[0]).children().val(Math.round(num + num*$('#porcentajeporcolumna').val()/100));
+            var costo = num + num*$('#porcentajeporcolumna').val()/100;
+            var porcentaje_venta = $($(this).find('td').eq(5)[0]).children().val();
+            $($(this).find('td').eq(6)[0]).children().text('$' + Math.round(costo + costo*porcentaje_venta/100))
+        });
+    });
+
+    $(document).on('change', '#detalles', function () {
+        $('#detalles > tbody  > tr').each(function(data){
+            var costo = parseInt($($(this).find('td').eq(4)[0]).children().val());
+            var porcentaje_venta = $($(this).find('td').eq(5)[0]).children().val();
+            $($(this).find('td').eq(6)[0]).children().text('$' + Math.round(costo + costo*porcentaje_venta/100))
+        });
+    });
+
+
+
+
     $(document).ready(function () {
 
         $(document).on('change', '.selectpicker', function () {
@@ -247,9 +269,9 @@
                     '<td><input type="hidden" name="codigoarticulo[]" value="'+data.codigo+'">'+data.codigo+'</td>' +
                     '<td><input type="hidden" name="idarticulo[]" value="'+data.idarticulo+'">'+data.nombre+'</td>' +
                     '<td><label type="number">%'+data.porcentaje+'</label></td>' +
-                    '<td><label type="number">$'+data.precio_compra+'</label></td>' +
+                    '<td><input type="number" name="nuevo_precio_compra[]" value="'+data.precio_compra+'"></td>' +
+                    '<td><input type="number" id="nuevo_porcentaje[]" name="nuevo_porcentaje[]" value='+data.porcentaje+'></td>' +
                     '<td><label type="number">$'+data.precio_venta+'</label></td>' +
-                    '<td><input type="number" name="nuevo_porcentaje[]" value='+data.porcentaje+'></td>' +
                     '</tr>';
                 cont++;
 

@@ -73,11 +73,13 @@ class PrecioController extends Controller
                 $articulo->update();
             }
             else{
-
                 $cont = 0;
                 $idarticulo = $request->get('idarticulo');
                 $porcentaje = $request->get('nuevo_porcentaje');
+                $nuevo_precio_compra = $request->get('nuevo_precio_compra');
+                $porcentajeParaColumna = $request->get('porcentajeporcolumna');
                 $mytime= Carbon::now('America/Argentina/Buenos_Aires');
+                dd($nuevo_precio_compra);
                 while($cont < count($idarticulo)){
 
                 $ultimoprecio = DB::table('precio')
@@ -85,12 +87,19 @@ class PrecioController extends Controller
                     ->orderBy('idarticulo','desc')
                     ->orderBy('idprecio','desc')
                     ->first();
+
                 if($porcentaje[$cont] != $ultimoprecio->porcentaje) {
                     $precio = new Precio();
                     $precio->idarticulo = $idarticulo[$cont];
                     $precio->porcentaje = $porcentaje[$cont];
                     $precio->fecha = $mytime->toDateTimeString();
-                    $precio->precio_compra = $ultimoprecio->precio_compra;
+                    if($porcentajeParaColumna!= null){
+
+                        $precio->precio_compra = $nuevo_precio_compra[$cont];
+                    }
+                    else{
+                        $precio->precio_compra = $ultimoprecio->precio_compra;
+                    }
                     $precio->precio_venta = (($porcentaje[$cont] / 100) + 1) * $ultimoprecio->precio_compra;
                     $precio->save();
                     $articulo = Articulo::findOrFail($idarticulo[$cont]);
