@@ -298,6 +298,7 @@ class IngresoController extends Controller
     {
         $data = Articulo::select('nombre','codigo','idarticulo','ultimoprecio')
             ->where('nombre','LIKE','%'.$request->get('query').'%')
+            ->where('estado','=','Activo')
             ->where('proveedor','=',$request->get('prov'))
             ->get();
         return response()->json($data);

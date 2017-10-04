@@ -333,14 +333,18 @@
                 data:{'startDate':$("#from").val(),'endDate':$("#to").val()},
                 success: function (data) {
                     console.log(data);
-
                     var arr = [];
-                    var len = data.length;
-                    for (var i = 0; i < len; i++) {
-                        arr.push({
-                            values: data[i]
-                        });
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            console.log(key + " -> " + data[key]);
+                        }
                     }
+//                    data.forEach(function(item) {
+//                        var fecha = item.fecha_hora.split(' ');
+//                        arr.push({
+//                            values: fecha[0]
+//                        });
+//                    });
                     zingchart.render({
                         id: 'ventachart',
                         data: {

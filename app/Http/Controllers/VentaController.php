@@ -655,6 +655,7 @@ class VentaController extends Controller
     {
         $data = Articulo::select('nombre','codigo','idarticulo','ultimoprecio')
             ->where('nombre','LIKE','%'.$request->get('query').'%')
+            ->where('estado','=','Activo')
             ->orwhere('codigo','LIKE','%'.$request->get('query').'%')
             ->get();
         return response()->json($data);
