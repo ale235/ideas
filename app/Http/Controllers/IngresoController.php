@@ -52,6 +52,7 @@ class IngresoController extends Controller
 
     public function store(IngresoFormRequest $request)
     {
+
         try
         {
             DB::beginTransaction();
@@ -247,7 +248,7 @@ class IngresoController extends Controller
         $articulo = DB::table('articulo as art')
             ->select('art.nombre','p.idpersona','art.idarticulo')
             ->join('persona as p','p.codigo','=','art.proveedor')
-            ->where('art.idarticulo','=',$request->codigo)->first();
+            ->where('art.codigo','=',$request->codigo)->first();
 
         return response()->json($articulo);//then sent this data to ajax success
     }

@@ -15,7 +15,7 @@
         @endif
         <!-- /.box-header -->
         <!-- form start -->
-        {!! Form::open(array('url'=>'compras/ingreso', 'method'=>'POST', 'autocomplete'=>'off'))!!}
+        {!! Form::open(array('url'=>'compras/ingreso', 'method'=>'POST', 'autocomplete'=>'off', 'id'=>'myForm'))!!}
         {{Form::token()}}
             <div class="box-body">
                 <div class="panel panel-primary">
@@ -33,7 +33,22 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="form-group has-success">
-                                <label class="control-label" for="inputSuccess"><i class="fa fa-check"></i> Nombre del artículo -> Acá se coloca un nombre para saber si el producto existe o no. En caso de que no exista, una vez escrito el nombre hacer click en Agregar Producto. Luego buscarlo en el campo de "Código del Artículo"  <br> SIEMPRE cargar todos los artículos de un proveedor, guardar y despues hacer otro.</label>
+                                <div style="display: none" id="textoAgregarArticuloCuidado"  class="alert alert-warning alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h4><i class="icon fa fa-warning"></i> El Artículo NO Existe</h4>
+                                    Si desea cargarlo haga Click en el Botón de "Agregar Artículo" de la derecha
+                                </div>
+                                <div style="display: none" id="textoAgregarArticuloOk" class="alert alert-success alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h4><i class="icon fa fa-check"></i> El Artículo es correcto</h4>
+                                </div>
+                                <div style="display: none" id="textoAgregarArticuloCargadoPerfecto" class="alert alert-success alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h4><i class="icon fa fa-check"></i> El Artículo fue cargado correctamente</h4>
+                                </div>
+                                <label class="control-label" for="inputSuccess">
+                                    <i class="fa fa-check"></i> Nombre del artículo
+                                </label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="inputSuccess" placeholder="Nombre del artículo" disabled>
                                     <span id="bt_add_product" class="input-group-addon btn" disabled>Agregar Producto</span>
@@ -42,9 +57,9 @@
                                 <div class="form-group">
                                     <label>Código del artículo</label>
                                     <div class="input-group">
-                                        <select name="pidarticulo" id="pidarticulo" class="selectpicker" data-live-search="true">
-                                            <option value="0" selected disabled>Elegí un artículo</option>
-                                        </select>
+                                        {{--<select name="pidarticulo" id="pidarticulo" class="selectpicker" data-live-search="true">--}}
+                                            {{--<option value="0" selected disabled>Elegí un artículo</option>--}}
+                                        {{--</select>--}}
                                         {{--<input type="text" class="form-control" name="pidarticulo" id="pidarticulo"/>--}}
                                         <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
                                         <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
@@ -124,11 +139,15 @@
        $('#bt_add').click(function () {
            agregar();
        });
-        $("#pidarticulo").keypress(function(event){
-            if (event.which == '10' || event.which == '13') {
+        $("#myform").keypress(function(e) {
+            if (e.which == 13 || e.which == '10') {
                 event.preventDefault();
             }
         });
+//
+//        $('.selectpicker').selectpicker({
+//            noneResultsText: '<a id="bt_add_product">Agregar Producto</a>'
+//        });
 
         $(document).on('change','.lista-proveedores',function(){
             // console.log("hmm its change");
@@ -140,32 +159,35 @@
 
             var op=" ";
 
-            $.ajax({
-                type:'get',
-                url:'{!!URL::to('buscarArticuloPorProveedor')!!}',
-                data:{'codigo':cat_id},
-                success:function(data){
-                    //console.log('success');
-                    if(data.length != 0){
-                        console.log(data);
+            $('#inputSuccess').attr('disabled',false);
+//            $('#bt_add_product').attr('disabled',false);
 
-                        //console.log(data.length);
-                        op+='<option value="0" selected disabled>Elegí un artículo</option>';
-                        for(var i=0;i<data.length;i++){
-                            op+='<option value="'+data[i].idarticulo+'">'+data[i].nombre+'</option>';
-                        }
-                        div.parent().parent().parent().parent().parent().find('#pidarticulo').html(" ");
-                        div.parent().parent().parent().parent().parent().find('#pidarticulo').append(op);
-                        $('#pidarticulo').selectpicker('refresh');
-                        $('#inputSuccess').attr('disabled',false);
-                        $('#bt_add_product').attr('disabled',false);
-                    }
+            {{--$.ajax({--}}
+                {{--type:'get',--}}
+                {{--url:'{!!URL::to('buscarArticuloPorProveedor')!!}',--}}
+                {{--data:{'codigo':cat_id},--}}
+                {{--success:function(data){--}}
+                    {{--//console.log('success');--}}
+                    {{--if(data.length != 0){--}}
+                        {{--console.log(data);--}}
+{{--//--}}
+{{--//                        //console.log(data.length);--}}
+{{--//                        op+='<option value="0" selected disabled>Elegí un artículo</option>';--}}
+{{--//                        for(var i=0;i<data.length;i++){--}}
+{{--//                            op+='<option value="'+data[i].idarticulo+'">'+data[i].nombre+'</option>';--}}
+{{--//                        }--}}
+{{--//                        div.parent().parent().parent().parent().parent().find('#pidarticulo').html(" ");--}}
+{{--//                        div.parent().parent().parent().parent().parent().find('#pidarticulo').append(op);--}}
+{{--//                        $('#pidarticulo').selectpicker('refresh');--}}
+                        {{--$('#inputSuccess').attr('disabled',false);--}}
+                        {{--$('#bt_add_product').attr('disabled',false);--}}
+                    {{--}--}}
 
-                },
-                error:function(){
+                {{--},--}}
+                {{--error:function(){--}}
 
-                }
-            });
+                {{--}--}}
+            {{--});--}}
         });
 
         var path ="{{ route('autocompleteIngresoPorProveedor') }}";
@@ -176,14 +198,49 @@
             source: function (query, process) {
 
                 return $.get(path, {query:query, prov: $(".lista-proveedores option:selected" ).text()}, function (data) {
+                    if(data.length == 0 ){
+                        $('#textoAgregarArticuloCuidado').css('display','block');
+                        $('#bt_add_product').attr('disabled',false);
+                    }else{
+                        $('#textoAgregarArticuloCuidado').css('display','none');
+                        $('#bt_add_product').attr('disabled',true);
+                    }
+
                     var nombres = data.map(function (item) {
 
-                        return item.nombre
+                        return item.codigo + ' ' + item.nombre
                     });
                     return process(nombres);
                 })
             },
             updater:function (item,data) {
+                $('#textoAgregarArticuloOk').css('display','block');
+                var input = item.split(' ');
+                $.ajax({
+                    type:'get',
+                    url:'{!!URL::to('buscarPrecioArticuloIngresosPorCodigo')!!}',
+                    data:{'codigo':input[0]},
+                    success:function(data){
+                        //console.log('success');
+                        if(jQuery.isEmptyObject(data)){
+                            $('#pidarticulo').val("");
+                            alert('NO')
+                        }
+                        else if($('#pidproveedor').val() != "" && $('#pidproveedor').val() != data.idpersona){
+                            $('#pidarticulo').val("");
+                            alert('El artículo no pertenece al primer proveedor cargado')
+                        } else{
+                            $('#inputSuccess').val(data.nombre);
+                            $('#pidarticuloidarticulo').val(data.idarticulo);
+                            $('#pidarticulonombre').val(data.nombre);
+                            $('#pidproveedor').val(data.idpersona);
+                        }
+
+                    },
+                    error:function(){
+
+                    }
+                });
 
             }
         });
@@ -199,34 +256,11 @@
                 url:'{!!URL::to('agregarArticuloParaIngreso')!!}',
                 data:{'prov':cat_prov, 'nombre':nombre_prov},
                 success:function(data){
-                    //console.log('success');
-                    $.ajax({
-                        type:'get',
-                        url:'{!!URL::to('buscarArticuloPorProveedor')!!}',
-                        data:{'codigo':data.proveedor},
-                        success:function(data){
-                            //console.log('success');
-                            var op=" ";
-                            if(data.length != 0){
-                                console.log(data);
-
-                                //console.log(data.length);
-                                op+='<option value="0" selected disabled>Elegí un artículo</option>';
-                                for(var i=0;i<data.length;i++){
-                                    op+='<option value="'+data[i].idarticulo+'">'+data[i].nombre+'</option>';
-                                }
-                                $('#pidarticulo').html(" ");
-                                $('#pidarticulo').append(op);
-                                $('#pidarticulo').selectpicker('refresh');
-                                $('#inputSuccess').attr('disabled',false);
-                                $('#bt_add_product').attr('disabled',false);
-                            }
-
-                        },
-                        error:function(){
-
-                        }
-                    });
+                    $('#inputSuccess').val(data.nombre);
+                    $('#pidarticuloidarticulo').val(data.idarticulo);
+                    $('#pidarticulonombre').val(data.nombre);
+                    $('#textoAgregarArticuloCuidado').css('display','none');
+                    $('#textoAgregarArticuloCargadoPerfecto').css('display','block');
 
                 },
                 error:function(){
@@ -324,7 +358,8 @@
         $('#pprecio_compra_costo').val("");
         $('#pporcentaje_venta').val("");
         $('#pprecio_venta_esperado').val("");
-        $('#pidarticulo').val(" ");
+        $('#inputSuccess').val("");
+
     }
 
     function evaluar()
@@ -350,7 +385,7 @@
         if(idarticulo!='' && cantidad!='' && cantidad>0 && precio_compra_costo!='' && porcentaje_venta!=''){
             subtotal[cont] = (cantidad*precio_compra_costo);
             total = total+subtotal[cont];
-            var fila = '<tr class="selected" id="fila'+cont+'"><td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" value="'+cantidad+'"></td><td><input type="number" name="precio_compra_costo[]" value="'+precio_compra_costo+'"></td><td><input type="number" name="porcentaje_venta[]" value="'+porcentaje_venta+'"></td><td>'+subtotal[cont]+'</td></tr>';
+            var fila = '<tr class="selected" id="fila'+cont+'"><td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" value="'+cantidad+'" readonly></td><td><input type="number" name="precio_compra_costo[]" value="'+precio_compra_costo+'" readonly></td><td><input type="number" name="porcentaje_venta[]" value="'+porcentaje_venta+'" readonly></td><td>'+subtotal[cont]+'</td></tr>';
             cont++;
             limpiar();
             $('#total').html('$' + total);
@@ -360,8 +395,10 @@
         else{
             alert("error al ingresar un ingreso, revise los datos del articulo");
         }
-
-        $("#pidarticulo")[0].selectedIndex = 0;
+        $('#textoAgregarArticuloOk').css('display','none');
+        $('#textoAgregarArticuloCargadoPerfecto').css('display','none');
+        $('#inputSuccess').focus();
+//        $("#pidarticulo")[0].selectedIndex = 0;
     }
 
     function eliminar(index) {

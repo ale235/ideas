@@ -507,7 +507,7 @@ class VentaController extends Controller
         $filanueva[5] = ' ';
         $columna[$cont2] = $filanueva;
 
-        Excel::create('Laravel Excel', function ($excel) use ($columna) {
+        Excel::create('Caja ' . $mytime->format('Y-m-d'), function ($excel) use ($columna) {
 
             $excel->sheet('Excel sheet', function ($sheet) use ($columna) {
 
