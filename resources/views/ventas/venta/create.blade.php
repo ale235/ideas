@@ -31,7 +31,7 @@
             {{--</select>--}}
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-barcode"></i></span>
-                <input type="text" name="pidarticulo" id="pidarticulo" class="form-control"/>
+                <input type="text" name="pidarticulo" id="pidarticulo" class="form-control typeahead"/>
             </div>
             <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
             <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
@@ -207,9 +207,10 @@
             {!! Form::close()!!}
 @push ('scripts')
 <style>
-    #scrollable-dropdown-menu .tt-dropdown-menu {
+    #scrollable-dropdown-menu .tt-menu {
         max-height: 150px;
         overflow-y: auto;
+        background-color: red;
     }
 </style>
 <script>

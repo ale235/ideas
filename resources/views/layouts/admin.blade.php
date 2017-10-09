@@ -21,6 +21,8 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 
+    <link rel="stylesheet" href={{asset('css/daterangepicker.css')}}>
+
 
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
@@ -107,11 +109,14 @@
                 <li class="treeview">
                     <a href="#"><i class='fa fa-link'></i> <span>Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ url('compras/ingreso') }}">Ingreso</a></li>
+                        {{--<li><a href="{{ url('compras/ingreso') }}">Ingreso</a></li>--}}
                         <li><a href="{{ url('compras/proveedor') }}">Proveedor</a></li>
                     </ul>
                 </li>
                 @endif
+                <li class="treeview">
+                    <a href="{{ url('compras/ingreso/create') }}"><i class='fa fa-link'></i> <span>Ingreso</span> <i class="fa fa-angle-left pull-right"></i></a>
+                </li>
                 <li class="treeview">
                     <a href="#"><i class='fa fa-link'></i> <span>Ventas</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
@@ -126,7 +131,7 @@
                 <li class="treeview">
                     <a href="#"><i class='fa fa-link'></i> <span>Precios</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ url('precios/actualizar') }}">Actualizar precios</a></li>
+                        <li><a href="{{ url('precios/actualizar') }}">Consultar o Cambiar Precios</a></li>
                     </ul>
                 </li>
                 @endif
@@ -226,7 +231,7 @@
 <!-- AdminLTE App -->
 <script src={{asset('js/app.min.js')}}></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.js"></script>
+<script src={{asset('js/bootstrap3-typeahead.js')}}></script>
 
 
 </body>

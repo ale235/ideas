@@ -105,7 +105,7 @@ class IngresoController extends Controller
             DB::rollback();
         }
 
-        return Redirect::to('compras/ingreso');
+        return Redirect::to('compras/ingreso/create');
     }
 
     public function show($id)
