@@ -380,8 +380,8 @@ class VentaController extends Controller
             $columna[$cont2] = $fila;
             $cont2 = $cont2 + 1;
         }
-
-        Excel::create('Laravel Excel', function ($excel) use ($columna,$total,$totalPromedioTentativo) {
+        $pieces = explode(" - ", $date);
+        Excel::create('Detalle entre: '.$pieces[0].' a '.$pieces[1], function ($excel) use ($columna,$total,$totalPromedioTentativo) {
 
             $excel->sheet('Excel sheet', function ($sheet) use ($columna,$total,$totalPromedioTentativo) {
 
@@ -445,7 +445,8 @@ class VentaController extends Controller
         $filanueva[2] = $total;
         $columna[$cont2] = $filanueva;
 
-        Excel::create('Laravel Excel', function ($excel) use ($columna) {
+        $pieces = explode(" - ", $date);
+        Excel::create('Resultado entre: '.$pieces[0].' a '.$pieces[1], function ($excel) use ($columna) {
 
             $excel->sheet('Excel sheet', function ($sheet) use ($columna) {
 
