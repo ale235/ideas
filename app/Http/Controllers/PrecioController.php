@@ -167,9 +167,10 @@ class PrecioController extends Controller
         //if our chosen id and products table prod_cat_id col match the get first 100 data
         //$request->id here is the id of our chosen option id
         $data= DB::table('precio as p')
+            ->join('articulo as art','p.idarticulo','=','art.idarticulo')
             ->where('p.idarticulo','=',$request->id)
-            ->orderBy('idarticulo','desc')
-            ->orderBy('idprecio','desc')
+            ->orderBy('p.idarticulo','desc')
+            ->orderBy('p.idprecio','desc')
             ->get();
         //$data= DB::table('articulo as art')->join('persona as p', 'p.codigo' , '=', 'art.proveedor')->select('art.idarticulo','art.nombre','art.codigo','id.persona')->where('p.codigo','=',$request->codigo)->get();
         $data = $data->unique('idarticulo');
@@ -191,6 +192,47 @@ class PrecioController extends Controller
             ->get();
 
         return response()->json($data);//then sent this data to ajax success
+    }
+
+    public function getPorArticulo()
+    {
+        $proveedores=DB::table('persona')
+            ->where('tipo_persona','=','Proveedor')
+            ->where('estado','=','Activo')
+            ->orderBy('codigo','asc')
+            ->get();
+        return view('precios.actualizar.porarticulo',['proveedores'=>$proveedores]);
+    }
+
+    public function storeArticulo(Request $request)
+    {
+        //dd($request);
+        try
+        {
+            DB::beginTransaction();
+            $idarticulo = $request->get('pidarticulo');
+            $porcentaje = $request->get('nuevo_porcentaje1');
+            $nuevo_precio_compra = $request->get('nuevo_precio_compra');
+            $mytime= Carbon::now('America/Argentina/Buenos_Aires');
+
+            $precio = new Precio();
+            $precio->idarticulo = $idarticulo;
+            $precio->porcentaje = $porcentaje;
+            $precio->fecha = $mytime->toDateTimeString();
+            $precio->precio_compra = $nuevo_precio_compra;
+            $precio->precio_venta = (($porcentaje / 100) + 1) * $nuevo_precio_compra;
+            $precio->save();
+            $articulo = Articulo::findOrFail($idarticulo);
+            $articulo->ultimoprecio = $precio->precio_venta;
+            $articulo->update();
+            DB::commit();
+        }
+        catch(\Exception $e)
+        {
+            DB::rollback();
+        }
+
+        return Redirect::to('precios/actualizar');
     }
 
 

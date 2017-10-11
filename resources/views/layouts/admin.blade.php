@@ -99,40 +99,59 @@
                 <li class="active"><a href="{{ url('home') }}"><i class='fa fa-link'></i> <span>Reportes</span></a></li>
                 @endif
                 <li class="treeview">
-                    <a href="#"><i class='fa fa-folder-open'></i> <span>Almacén</span> <i class="fa fa-angle-left pull-right"></i></a>
-                    <ul class="treeview-menu">
-                        <li><a href="{{ url('almacen/articulo?selectText=Activo') }}">Artículo</a></li>
-                        <li><a href="{{ url('almacen/categoria?select-categoria=1') }}">Categorías</a></li>
-                    </ul>
+                    <a href="{{ url('almacen/articulo?selectText=Activo') }}"><i class='fa fa-folder-open'></i> <span>Artículos</span> <i class="fa fa-angle-left pull-right"></i></a>
                 </li>
-                @if (Auth::user()->role == 1)
-                <li class="treeview">
-                    <a href="#"><i class='fa fa-link'></i> <span>Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
-                    <ul class="treeview-menu">
+                {{--<li class="treeview">--}}
+                    {{--<a href="#"><i class='fa fa-folder-open'></i> <span>Almacén</span> <i class="fa fa-angle-left pull-right"></i></a>--}}
+                    {{--<ul class="treeview-menu">--}}
+                        {{--<li><a href="{{ url('almacen/articulo?selectText=Activo') }}">Artículo</a></li>--}}
+                        {{--<li><a href="{{ url('almacen/categoria?select-categoria=1') }}">Categorías</a></li>--}}
+                    {{--</ul>--}}
+                {{--</li>--}}
+                {{--@if (Auth::user()->role == 1)--}}
+                {{--<li class="treeview">--}}
+                    {{--<a href="#"><i class='fa fa-link'></i> <span>Compras</span> <i class="fa fa-angle-left pull-right"></i></a>--}}
+                    {{--<ul class="treeview-menu">--}}
                         {{--<li><a href="{{ url('compras/ingreso') }}">Ingreso</a></li>--}}
-                        <li><a href="{{ url('compras/proveedor') }}">Proveedor</a></li>
-                    </ul>
-                </li>
+                        {{--<li><a href="{{ url('compras/proveedor') }}">Proveedor</a></li>--}}
+                    {{--</ul>--}}
+                {{--</li>--}}
+                {{--@endif--}}
+                @if (Auth::user()->role == 1)
+                    <li class="treeview">
+                        <a href="{{ url('compras/proveedor') }}"><i class='fa fa-link'></i> <span>Proveedores</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    </li>
                 @endif
+                @if (Auth::user()->role == 1)
                 <li class="treeview">
                     <a href="{{ url('compras/ingreso/create') }}"><i class='fa fa-link'></i> <span>Ingreso</span> <i class="fa fa-angle-left pull-right"></i></a>
                 </li>
-                <li class="treeview">
-                    <a href="#"><i class='fa fa-link'></i> <span>Ventas</span> <i class="fa fa-angle-left pull-right"></i></a>
-                    <ul class="treeview-menu">
-                        <li><a href="{{ url('ventas/cliente') }}">Clientes</a></li>
-                        <li><a href="{{ url('ventas/venta?daterange') }}">Ventas</a></li>
-                    </ul>
-                </li>
+                @endif
+                {{--@if (Auth::user()->role == 1)--}}
+                {{--<li class="treeview">--}}
+                    {{--<a href="#"><i class='fa fa-link'></i> <span>Ventas</span> <i class="fa fa-angle-left pull-right"></i></a>--}}
+                    {{--<ul class="treeview-menu">--}}
+                        {{--<li><a href="{{ url('ventas/cliente') }}">Clientes</a></li>--}}
+                        {{--<li><a href="{{ url('ventas/venta?daterange') }}">Ventas</a></li>--}}
+                    {{--</ul>--}}
+                {{--</li>--}}
+                {{--@endif--}}
+                @if (Auth::user()->role == 1)
+                    <li class="treeview">
+                        <a href="{{ url('ventas/cliente') }}"><i class='fa fa-link'></i> <span>Ventas</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    </li>
+                @endif
+                @if (Auth::user()->role == 1)
+                    <li class="treeview">
+                        <a href="{{ url('ventas/cliente') }}"><i class='fa fa-link'></i> <span>Clientes</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    </li>
+                @endif
                 <li class="treeview">
                     <a href="{{ url('ventas/venta/create') }}"><i class='fa fa-link'></i> <span>Facturación</span> <i class="fa fa-angle-left pull-right"></i></a>
                 </li>
                 @if (Auth::user()->role == 1)
                 <li class="treeview">
-                    <a href="#"><i class='fa fa-link'></i> <span>Precios</span> <i class="fa fa-angle-left pull-right"></i></a>
-                    <ul class="treeview-menu">
-                        <li><a href="{{ url('precios/actualizar') }}">Consultar o Cambiar Precios</a></li>
-                    </ul>
+                    <a href="{{ url('precios/actualizar') }}"><i class='fa fa-link'></i> <span>Precios</span> <i class="fa fa-angle-left pull-right"></i></a>
                 </li>
                 @endif
                 @if (Auth::user()->role == 1)

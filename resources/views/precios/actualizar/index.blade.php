@@ -1,5 +1,19 @@
 @extends ('layouts.admin')
 @section ('contenido')
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Escojer como cambiar los precios</h3>
+        </div>
+        <div class="box-body">
+            <a class="btn btn-app" href="{{URL::action('PrecioController@getPorArticulo')}}">
+                <i class="fa fa-edit"></i> Por Artículo
+            </a>
+            <a class="btn btn-app">
+                <i class="fa fa-edit"></i> Por Familia de Artículo
+            </a>
+        </div>
+        <!-- /.box-body -->
+    </div>
 <div class="row">
     <div class="container col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <h2>Actualizar Precios</h2>
@@ -159,9 +173,9 @@
 
     $(document).ready(function () {
 
-        $(document).on('change', '.selectpicker', function () {
-            $('.selectpicker').selectpicker('refresh');
-        });
+    $(document).on('change', '.selectpicker', function () {
+        $('.selectpicker').selectpicker('refresh');
+    });
     $(document).on('change','.lista-proveedores',function(){
         // console.log("hmm its change");
 

@@ -88,4 +88,8 @@ Route::get('/agregarArticuloParaIngreso','IngresoController@agregarArticuloParaI
 
 Route::get('autocompleteIngresoPorProveedor',array('as'=>'autocompleteIngresoPorProveedor', 'uses'=>'IngresoController@autocompleteIngresoPorProveedor'));
 
+Route::get('/precios/porarticulo', 'PrecioController@getPorArticulo');
+
+Route::post('/precios/porarticulo', 'PrecioController@storeArticulo');
+
 Auth::routes();
