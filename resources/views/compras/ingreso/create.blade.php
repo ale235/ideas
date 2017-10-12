@@ -200,6 +200,7 @@
                 return $.get(path, {query:query, prov: $(".lista-proveedores option:selected" ).text()}, function (data) {
                     if(data.length == 0 ){
                         $('#textoAgregarArticuloCuidado').css('display','block');
+                        $('#textoAgregarArticuloOk').css('display','none');
                         $('#bt_add_product').attr('disabled',false);
                     }else{
                         $('#textoAgregarArticuloCuidado').css('display','none');
@@ -215,6 +216,8 @@
             },
             updater:function (item,data) {
                 $('#textoAgregarArticuloOk').css('display','block');
+
+                $('#textoAgregarArticuloCargadoPerfecto').css('display','none');
                 var input = item.split(' ');
                 $.ajax({
                     type:'get',
@@ -393,7 +396,7 @@
             $('#detalles').append(fila);
         }
         else{
-            alert("error al ingresar un ingreso, revise los datos del articulo");
+            alert("Haga click en Agregar Producto a la derecha del nombre así queda guardado en la Base de Datos o complete las cantidades y precios");
         }
         $('#textoAgregarArticuloOk').css('display','none');
         $('#textoAgregarArticuloCargadoPerfecto').css('display','none');

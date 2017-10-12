@@ -37,90 +37,6 @@ class PrecioController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request);
-        try
-        {
-            DB::beginTransaction();
-//            $precio = new Precio;
-//            $mytime= Carbon::now('America/Argentina/Buenos_Aires');
-//            $precio->idarticulo = $request->get('pidarticulo');
-//            $precio->precio = $request->get('pporcentaje_venta');
-//            $precio->fecha=$mytime->toDateTimeString();
-//            $precio->save();
-            //dd($request);
-            if($request->get('pidarticulo') != null && $request->get('pidarticulo') != ''){
-
-    //            dd($request);
-                $idarticulo = $request->get('pidarticulo');
-                $porcentaje = $request->get('nuevo_porcentaje1');
-                $mytime= Carbon::now('America/Argentina/Buenos_Aires');
-
-                $ultimoprecio = DB::table('precio')
-                    ->where('idarticulo','=', $idarticulo)
-                    ->orderBy('idarticulo','desc')
-                    ->orderBy('idprecio','desc')
-                    ->first()
-                    ->precio_compra;
-                $precio = new Precio();
-                $precio->idarticulo = $idarticulo;
-                $precio->porcentaje = $porcentaje;
-                $precio->fecha = $mytime->toDateTimeString();
-                $precio->precio_compra = $ultimoprecio;
-                $precio->precio_venta = (($porcentaje / 100) + 1) * $ultimoprecio;
-                $precio->save();
-                $articulo = Articulo::findOrFail($idarticulo);
-                $articulo->ultimoprecio = $precio->precio_venta;
-                $articulo->update();
-            }
-            else{
-                $cont = 0;
-                $idarticulo = $request->get('idarticulo');
-                $porcentaje = $request->get('nuevo_porcentaje');
-                $nuevo_precio_compra = $request->get('nuevo_precio_compra');
-                $porcentajeParaColumna = $request->get('porcentajeporcolumna');
-                $mytime= Carbon::now('America/Argentina/Buenos_Aires');
-                while($cont < count($idarticulo)){
-
-                $ultimoprecio = DB::table('precio')
-                    ->where('idarticulo','=', $idarticulo[$cont])
-                    ->orderBy('idarticulo','desc')
-                    ->orderBy('idprecio','desc')
-                    ->first();
-                if($porcentaje[$cont] != $ultimoprecio->porcentaje || $porcentajeParaColumna != null) {
-                    $precio = new Precio();
-                    $precio->idarticulo = $idarticulo[$cont];
-                    $precio->porcentaje = $porcentaje[$cont];
-                    $precio->fecha = $mytime->toDateTimeString();
-                    if($porcentajeParaColumna!= null){
-
-                        $precio->precio_compra = $nuevo_precio_compra[$cont];
-                    }
-                    else{
-                        $precio->precio_compra = $ultimoprecio->precio_compra;
-                    }
-                    $precio->precio_venta = (($porcentaje[$cont] / 100) + 1) * $nuevo_precio_compra[$cont];
-                    $precio->save();
-                    $articulo = Articulo::findOrFail($idarticulo[$cont]);
-                    $articulo->ultimoprecio = $precio->precio_venta;
-                    $articulo->update();
-                }
-                $cont= $cont+1;
-                }
-            }
-
-
-//            $precio = new Precio;
-
-
-
-            DB::commit();
-        }
-        catch(\Exception $e)
-        {
-            DB::rollback();
-        }
-
-        return Redirect::to('precios/actualizar');
     }
 
     public function show($id)
@@ -204,6 +120,16 @@ class PrecioController extends Controller
         return view('precios.actualizar.porarticulo',['proveedores'=>$proveedores]);
     }
 
+    public function getPorFamilia()
+    {
+        $proveedores=DB::table('persona')
+            ->where('tipo_persona','=','Proveedor')
+            ->where('estado','=','Activo')
+            ->orderBy('codigo','asc')
+            ->get();
+        return view('precios.actualizar.porfamilia',['proveedores'=>$proveedores]);
+    }
+
     public function storeArticulo(Request $request)
     {
         //dd($request);
@@ -225,6 +151,54 @@ class PrecioController extends Controller
             $articulo = Articulo::findOrFail($idarticulo);
             $articulo->ultimoprecio = $precio->precio_venta;
             $articulo->update();
+            DB::commit();
+        }
+        catch(\Exception $e)
+        {
+            DB::rollback();
+        }
+
+        return Redirect::to('precios/actualizar');
+    }
+
+    public function storeFamilia(Request $request)
+    {
+        try
+        {
+            DB::beginTransaction();
+            $cont = 0;
+            $idarticulo = $request->get('idarticulo');
+            $porcentaje = $request->get('nuevo_porcentaje');
+            $nuevo_precio_compra = $request->get('nuevo_precio_compra');
+            $porcentajeParaColumna = $request->get('porcentajeporcolumna');
+            $mytime= Carbon::now('America/Argentina/Buenos_Aires');
+            while($cont < count($idarticulo)){
+
+                $ultimoprecio = DB::table('precio')
+                    ->where('idarticulo','=', $idarticulo[$cont])
+                    ->orderBy('idarticulo','desc')
+                    ->orderBy('idprecio','desc')
+                    ->first();
+                if($porcentaje[$cont] != $ultimoprecio->porcentaje || $porcentajeParaColumna != null || $nuevo_precio_compra[$cont] != $ultimoprecio->precio_compra) {
+                    $precio = new Precio();
+                    $precio->idarticulo = $idarticulo[$cont];
+                    $precio->porcentaje = $porcentaje[$cont];
+                    $precio->fecha = $mytime->toDateTimeString();
+                    if($porcentajeParaColumna!= null || $nuevo_precio_compra[$cont] != $ultimoprecio->precio_compra){
+
+                        $precio->precio_compra = $nuevo_precio_compra[$cont];
+                    }
+                    else{
+                        $precio->precio_compra = $ultimoprecio->precio_compra;
+                    }
+                    $precio->precio_venta = (($porcentaje[$cont] / 100) + 1) * $nuevo_precio_compra[$cont];
+                    $precio->save();
+                    $articulo = Articulo::findOrFail($idarticulo[$cont]);
+                    $articulo->ultimoprecio = $precio->precio_venta;
+                    $articulo->update();
+                }
+                $cont= $cont+1;
+            }
             DB::commit();
         }
         catch(\Exception $e)

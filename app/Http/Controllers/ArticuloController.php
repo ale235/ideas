@@ -150,7 +150,7 @@ class ArticuloController extends Controller
 
     public function show($id)
     {
-        return view('almacen.articulo.show',['articulo'=>Articulo::findOrFail($id)]);
+        return view('almacen.articulo.show',['articulo'=>Articulo::findOrFail($id),'precio'=>Precio::where('idarticulo',$id)->orderBy('idprecio','desc')->first()]);
     }
 
     public function edit($id)
