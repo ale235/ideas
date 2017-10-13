@@ -96,4 +96,6 @@ Route::get('/precios/porfamilia', 'PrecioController@getPorFamilia');
 
 Route::post('/precios/porfamilia', 'PrecioController@storeFamilia');
 
+Route::get('/verificarCodigo','ArticuloController@verificarCodigo');
+
 Auth::routes();

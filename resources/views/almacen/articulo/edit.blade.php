@@ -16,7 +16,31 @@
         @endif
         {!! Form::model($articulo, ['method'=>'PATCH','route'=>['articulo.update',$articulo->idarticulo], 'files'=>'true'])!!}
         {{Form::token()}}
+
         <div class="box-body">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Proveedor</span>
+                    <select  name="idproveedores" id="idproveedores"  class="form-control selectpicker" data-live-search="true">
+                        <option value="{{$articulo->proveedor}}" selected>{{$articulo->proveedor}}</option>
+                        @foreach($proveedores as $prov)
+                            <option value="{{$prov->codigo}}">{{$prov->codigo}}</option>
+                        @endforeach
+                    </select>
+                    <input type="hidden" name="idproveedorsolo" id="idproveedorsolo" value="{{old('idproveedorsolo')}}">
+                    <input type="hidden" name="idproveedor" id="idproveedor" value="{{old('idproveedor')}}">
+                    <span class="input-group-btn">
+                        <a href="{{ url('compras/proveedor/create?lastPage=art') }}"><button type="button" class="btn btn-info btn-flat">Nuevo Proveedor</button></a>
+                    </span>
+                </div>
+            </div>
+            <br>
+
+            <div class="input-group">
+                <span class="input-group-addon">Código</span>
+                <input type="number" name="codigo" id="codigo" value="{{old('codigo')}}" class="form-control" placeholder="Código...">
+            </div>
+            <br>
 
             <div class="input-group">
                 <span class="input-group-addon">Nombre</span>
@@ -42,21 +66,6 @@
                 </div>
             </div>
             <br>
-
-            {{--<div class="form-group">--}}
-                {{--<div class="input-group">--}}
-                    {{--<span class="input-group-addon">Proveedor</span>--}}
-                    {{--<select name="idproveedores" class="form-control">--}}
-                        {{--@foreach($proveedores as $prov)--}}
-                            {{--<option value="{{$prov->idpersona}}">{{$prov->codigo}}</option>--}}
-                        {{--@endforeach--}}
-                    {{--</select>--}}
-                    {{--<span class="input-group-btn">--}}
-                        {{--<a href="{{ url('compras/proveedor/create?lastPage=art') }}"><button type="button" class="btn btn-info btn-flat">Nuevo Proveedor</button></a>--}}
-                    {{--</span>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-            {{--<br>--}}
 
             <div class="from-group">
                 <label for="stock">Código</label>
@@ -84,3 +93,28 @@
         {!! Form::close()!!}
     </div>
 @endsection
+
+@push ('scripts')
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            type:'get',
+            url:'{!!URL::to('verificarCodigo')!!}',
+            data:{'codigo':$( "#myselect option:selected" ).text()},
+            success:function(data){
+                if(data.codigo != null){
+                    $('#codigo').val('');
+                    alert('El código ya existe')
+
+                }
+
+            },
+            error:function(){
+
+            }
+        });
+    });
+
+</script>
+@endpush

@@ -85,8 +85,8 @@ class ArticuloController extends Controller
             DB::beginTransaction();
         $articulo = new Articulo;
         $articulo->idcategoria = $request->get('idcategoria');
-        $articulo->codigo = $request->get('idproveedores') . $request->get('codigo');
-        $articulo->proveedor = $request->get('idproveedores');
+        $articulo->codigo = $request->get('idproveedor') . $request->get('codigo');
+        $articulo->proveedor = $request->get('idproveedor');
         $articulo->nombre = $request->get('nombre');
         $articulo->stock = 0;
         $articulo->descripcion = $request->get('descripcion');
@@ -290,7 +290,7 @@ class ArticuloController extends Controller
 
         //it will get price if its id match with product id
         //$p=Product::select('price')->where('id',$request->id)->first();
-        $p=DB::table('persona as p')->select('p.idpersona')->where('p.codigo','=', $request->codigo)->get();
+        $p=DB::table('persona as p')->select('p.idpersona','p.codigo')->where('p.codigo','=', $request->codigo)->get();
         return response()->json($p);
     }
 
@@ -299,13 +299,21 @@ class ArticuloController extends Controller
               //it will get price if its id match with product id
               //$p=Product::select('price')->where('id',$request->id)->first();
               $p=DB::table('articulo as art')
-                     ->select('art.idarticulo')
+                     ->select('art.codigo')
                   ->where('art.proveedor','=', $request->codigo)
-                  ->orderBy('art.idarticulo','desc')
-                  ->get();
+                  ->orderBy('art.codigo','desc')
+                  ->first();
        return response()->json($p);
    }
 
-// ->orderBy('p.idprecio','desc')
-//->select(DB::raw('max(p.idprecio) as elprecio'),'p.idprecio','art.idarticulo','p.fecha','p.precio_venta','art.codigo','art.nombre','p.porcentaje','p.precio_compra')
+    public function verificarCodigo(Request $request){
+
+        //it will get price if its id match with product id
+        //$p=Product::select('price')->where('id',$request->id)->first();
+        $p=DB::table('articulo as art')
+            ->where('art.codigo','=', $request->codigo)
+            ->first();
+        return response()->json($p);
+    }
+
 }

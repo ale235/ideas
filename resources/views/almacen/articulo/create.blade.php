@@ -28,6 +28,7 @@
                         @endforeach
                     </select>
                     <input type="hidden" name="idproveedorsolo" id="idproveedorsolo" value="{{old('idproveedorsolo')}}">
+                    <input type="hidden" name="idproveedor" id="idproveedor" value="{{old('idproveedor')}}">
                     <span class="input-group-btn">
                         <a href="{{ url('compras/proveedor/create?lastPage=art') }}"><button type="button" class="btn btn-info btn-flat">Nuevo Proveedor</button></a>
                     </span>
@@ -37,7 +38,7 @@
 
             <div class="input-group">
                 <span class="input-group-addon">Código</span>
-                <input type="text" name="codigo" id="codigo" value="{{old('codigo')}}" class="form-control" placeholder="Código...">
+                <input type="number" name="codigo" id="codigo" value="{{old('codigo')}}" class="form-control" placeholder="Código...">
             </div>
             <br>
 
@@ -66,21 +67,21 @@
 
             <div class="input-group">
                 <span id="inputdelexistencia" style="display: none" class="input-group-addon">Hay <span id="existencia"></span> artículos en Stock</span>
-                <input type="number" name="pcantidad" id="pcantidad" class="form-control" onkeyup="actualizar()" placeholder="Cantidad">
+                <input type="number" name="pcantidad" id="pcantidad" class="form-control" onkeyup="actualizar()" placeholder="Cantidad" required>
                 <span class="input-group-addon">Cantidad de Artículos a Ingresar al Stock</span>
             </div>
             <br>
 
             <div class="input-group">
                 <span class="input-group-addon">$</span>
-                <input type="number" name="pprecio_compra_costo" id="pprecio_compra_costo" class="form-control" onkeyup="actualizar()" placeholder="Costo">
+                <input type="number" name="pprecio_compra_costo" id="pprecio_compra_costo" class="form-control" onkeyup="actualizar()" placeholder="Costo" required>
                 <span class="input-group-addon">Costo del Artículo</span>
             </div>
             <br>
 
             <div class="input-group">
                 <span class="input-group-addon">%</span>
-                <input type="number" name="pporcentaje_venta" id="pporcentaje_venta" class="form-control" onkeypress="return valida(event)" onkeyup="actualizar()" placeholder="Porcentaje de Venta">
+                <input type="number" name="pporcentaje_venta" id="pporcentaje_venta" class="form-control" onkeypress="return valida(event)" onkeyup="actualizar()" placeholder="Porcentaje de Venta" required>
                 <span class="input-group-addon">Porcentaje de Venta del Artículo</span>
             </div>
             <br>
@@ -106,34 +107,11 @@
 
 @push ('scripts')
 <script>
-    var art = {!! json_encode($articulos->toArray()) !!};
-    var casa = '<?php echo $articulos ?>';
-    var ultimoid = null;
+
     $(document).ready(function () {
- /*       articulo = $('#idproveedores option:selected').text();
-        $('#idproveedores').click(function () {
-            agregarprov();
-        })
-        */
- /*       $(document).on('change','#idproveedores',function(){
-            // console.log("hmm its change");
 
-            var cat_id=$(this).val();
 
-            $.ajax({
-                type:'get',
-
-                data:{'codigo':cat_id},
-                success:function(data){
-                    $('#idproveedorsolo').val(data[0].idpersona);
-
-                },
-                error:function(){
-
-                }
-            });
-        });
-*/
+        $('#idproveedores option[value="'+$('#idproveedor').val()+'"]').attr('selected', 'selected');
 
         $(document).on('change','#idproveedores',function(){
             // console.log("hmm its change");
@@ -146,7 +124,7 @@
                 data:{'codigo':cat_id},
                 success:function(data){
                     $('#idproveedorsolo').val(data[0].idpersona);
-
+                    $('#idproveedor').val(data[0].codigo)
                 },
                 error:function(){
 
@@ -157,15 +135,16 @@
                 url:'{!!URL::to('buscarUltimoId')!!}',
                 data:{'codigo':cat_id},
                 success:function(data){
-                    //$('#idproveedorsolo').val(data[0].idpersona);
-                    if(data.length==0){
-                        ultimoid = 0;
-                    }else{
-                        ultimoid = data[0].idarticulo;
-                        console.log(data)
+                    if (data.codigo == null) {
+                        var d = ajustar(5, 1);
+                        $('#codigo').val(d);
                     }
-
-                    agregarprov()
+                    else {
+                        var a = data.codigo.substr(data.codigo.length - 5);
+                        var b = parseInt(a) + 1;
+                        var c = ajustar(5, b);
+                        $('#codigo').val(c);
+                    }
 
                 },
                 error:function(){
@@ -174,31 +153,28 @@
             });
 
         });
-
         $(document).on('change','#codigo',function(){
             var cod = $('#idproveedores').val()+$('#codigo').val();
-           for(var i = 0; i<art.length;i++){
-               if(art[i].codigo == cod){
-                   alert('El código ya existe');
-                   $('#codigo').val(' ');
-               }
-           }
 
+            $.ajax({
+                type:'get',
+                url:'{!!URL::to('verificarCodigo')!!}',
+                data:{'codigo':cod},
+                success:function(data){
+                  if(data.codigo != null){
+                      $('#codigo').val('');
+                      alert('El código ya existe')
+
+                  }
+
+                },
+                error:function(){
+
+                }
+            });
         });
     });
 
-    function agregarprov() {
-        var proveedorselected = $('#idproveedores option:selected').text();
-        if (ultimoid.length == 0) {
-            var d = ajustar(5, 1);
-            $('#codigo').val(d);
-        } else {
-            var a = ultimoid;
-            var b = parseInt(a) + 1;
-            var c = ajustar(5, b);
-            $('#codigo').val(c);
-        }
-    }
     function ajustar(tam, num) {
         if (num.toString().length < tam) return ajustar(tam, "0" + num)
         else return num;
