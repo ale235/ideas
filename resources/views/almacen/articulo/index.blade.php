@@ -47,7 +47,7 @@
                             @endif
                             <td>{{$art->estado}}</td>
                             <td>
-                                <a href="{{URL::action('ArticuloController@show',$art->idarticulo)}}"><button class="btn btn-info">Mostrar</button></a>
+                                <a href="{{URL::action('ArticuloController@show',$art->idarticulo)}}"><button class="btn btn-success">Mostrar</button></a>
                                 <a href="{{URL::action('ArticuloController@edit',$art->idarticulo)}}"><button class="btn btn-info">Editar</button></a>
                                 <a href="{{URL::action('ArticuloController@cambiarEstadoArticulo',$art->idarticulo)}}"><button class="btn btn-warning">Cambiar estado</button></a>
                                 {{--<a href="" data-target="#modal-delete-{{$art->idarticulo}}" data-toggle="modal"><button class="btn btn-danger">Eliminar</button></a>--}}

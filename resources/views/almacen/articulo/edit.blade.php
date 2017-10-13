@@ -38,7 +38,7 @@
 
             <div class="input-group">
                 <span class="input-group-addon">Código</span>
-                <input type="number" name="codigo" id="codigo" value="{{old('codigo')}}" class="form-control" placeholder="Código...">
+                <input type="text" name="codigo" id="codigo" value="{{$articulo->codigo}}" class="form-control" placeholder="Código...">
             </div>
             <br>
 
@@ -67,10 +67,6 @@
             </div>
             <br>
 
-            <div class="from-group">
-                <label for="stock">Código</label>
-                <input type="text" name="codigo" id="codigo" value="{{$articulo->codigo}}" class="form-control" placeholder="Código...">
-            </div>
 
             <br>
 
@@ -96,25 +92,5 @@
 
 @push ('scripts')
 <script>
-
-    $(document).ready(function () {
-        $.ajax({
-            type:'get',
-            url:'{!!URL::to('verificarCodigo')!!}',
-            data:{'codigo':$( "#myselect option:selected" ).text()},
-            success:function(data){
-                if(data.codigo != null){
-                    $('#codigo').val('');
-                    alert('El código ya existe')
-
-                }
-
-            },
-            error:function(){
-
-            }
-        });
-    });
-
 </script>
 @endpush
