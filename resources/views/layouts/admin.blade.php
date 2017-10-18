@@ -138,7 +138,7 @@
                 {{--@endif--}}
                 @if (Auth::user()->role == 1)
                     <li class="treeview">
-                        <a href="{{ url('ventas/cliente') }}"><i class='fa fa-link'></i> <span>Ventas</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <a href="{{ url('ventas/venta') }}"><i class='fa fa-link'></i> <span>Ventas</span> <i class="fa fa-angle-left pull-right"></i></a>
                     </li>
                 @endif
                 @if (Auth::user()->role == 1)

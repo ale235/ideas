@@ -200,6 +200,7 @@
                 return $.get(path, {query:query, prov: $(".lista-proveedores option:selected" ).text()}, function (data) {
                     if(data.length == 0 ){
                         $('#textoAgregarArticuloCuidado').css('display','block');
+                        $('#pidarticuloidarticulo').val('');
                         $('#textoAgregarArticuloOk').css('display','none');
                         $('#bt_add_product').attr('disabled',false);
                     }else{
@@ -237,6 +238,8 @@
                             $('#pidarticuloidarticulo').val(data.idarticulo);
                             $('#pidarticulonombre').val(data.nombre);
                             $('#pidproveedor').val(data.idpersona);
+                            $('#pprecio_compra_costo').val(data.precio_compra);
+                            $('#pporcentaje_venta').val(data.porcentaje);
                         }
 
                     },

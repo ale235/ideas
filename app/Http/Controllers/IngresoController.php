@@ -246,8 +246,10 @@ class IngresoController extends Controller
         //if our chosen id and products table prod_cat_id col match the get first 100 data
         //$request->id here is the id of our chosen option id
         $articulo = DB::table('articulo as art')
-            ->select('art.nombre','p.idpersona','art.idarticulo')
+            ->select('art.nombre','p.idpersona','art.idarticulo','pre.precio_compra','pre.precio_venta','pre.porcentaje')
             ->join('persona as p','p.codigo','=','art.proveedor')
+            ->join('precio as pre','art.idarticulo','pre.idarticulo')
+            ->orderBy('pre.idprecio','desc')
             ->where('art.codigo','=',$request->codigo)->first();
 
         return response()->json($articulo);//then sent this data to ajax success
