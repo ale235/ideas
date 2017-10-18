@@ -36,7 +36,7 @@
                                 <div style="display: none" id="textoAgregarArticuloCuidado"  class="alert alert-warning alert-dismissible">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                     <h4><i class="icon fa fa-warning"></i> El Artículo NO Existe</h4>
-                                    Si desea cargarlo haga Click en el Botón de "Agregar Artículo" de la derecha
+                                    Si desea cargarlo haga Click en el Botón de "Agregar Preducto" de la derecha
                                 </div>
                                 <div style="display: none" id="textoAgregarArticuloOk" class="alert alert-success alert-dismissible">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -61,6 +61,7 @@
                                             {{--<option value="0" selected disabled>Elegí un artículo</option>--}}
                                         {{--</select>--}}
                                         {{--<input type="text" class="form-control" name="pidarticulo" id="pidarticulo"/>--}}
+                                        <input type="text" class="form-control" name="codigodelarticuloacargar" id="codigodelarticuloacargar" readonly/>
                                         <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
                                         <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
                                         <input type="hidden" class="form-control" name="pidproveedor" id="pidproveedor"/>
@@ -103,6 +104,7 @@
                                 <table id="detalles" class="table table-striped table-bordered table-condensed table-hover">
                                     <thead style="background-color: #a94442">
                                     <th>Opciones</th>
+                                    <th>Código</th>
                                     <th>Artículo</th>
                                     <th>Cantidad</th>
                                     <th>Precio Compra</th>
@@ -111,6 +113,7 @@
                                     </thead>
                                     <tfoot>
                                     <th>TOTAL</th>
+                                    <th></th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -129,7 +132,7 @@
             <!-- /.box-body -->
 
             <div class="box-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Agregar Ingreso</button>
             </div>
         {!! Form::close()!!}
     </div>
@@ -144,50 +147,16 @@
                 event.preventDefault();
             }
         });
-//
-//        $('.selectpicker').selectpicker({
-//            noneResultsText: '<a id="bt_add_product">Agregar Producto</a>'
-//        });
 
-        $(document).on('change','.lista-proveedores',function(){
+        $(document).on('change','.lista-proveedores',function(data){
             // console.log("hmm its change");
             $(this).attr('readonly', true);
-            var cat_id=$(this).val();
+            var cat_id=$("#idproveedor option:selected").val();
             var input = cat_id.split('+')
             cat_id = input[1];
-            var div=$(this).parent();
-
-            var op=" ";
+            $('#pidproveedor').val(input[0]);
 
             $('#inputSuccess').attr('disabled',false);
-//            $('#bt_add_product').attr('disabled',false);
-
-            {{--$.ajax({--}}
-                {{--type:'get',--}}
-                {{--url:'{!!URL::to('buscarArticuloPorProveedor')!!}',--}}
-                {{--data:{'codigo':cat_id},--}}
-                {{--success:function(data){--}}
-                    {{--//console.log('success');--}}
-                    {{--if(data.length != 0){--}}
-                        {{--console.log(data);--}}
-{{--//--}}
-{{--//                        //console.log(data.length);--}}
-{{--//                        op+='<option value="0" selected disabled>Elegí un artículo</option>';--}}
-{{--//                        for(var i=0;i<data.length;i++){--}}
-{{--//                            op+='<option value="'+data[i].idarticulo+'">'+data[i].nombre+'</option>';--}}
-{{--//                        }--}}
-{{--//                        div.parent().parent().parent().parent().parent().find('#pidarticulo').html(" ");--}}
-{{--//                        div.parent().parent().parent().parent().parent().find('#pidarticulo').append(op);--}}
-{{--//                        $('#pidarticulo').selectpicker('refresh');--}}
-                        {{--$('#inputSuccess').attr('disabled',false);--}}
-                        {{--$('#bt_add_product').attr('disabled',false);--}}
-                    {{--}--}}
-
-                {{--},--}}
-                {{--error:function(){--}}
-
-                {{--}--}}
-            {{--});--}}
         });
 
         var path ="{{ route('autocompleteIngresoPorProveedor') }}";
@@ -237,6 +206,7 @@
                             $('#pidarticuloidarticulo').val(data.idarticulo);
                             $('#pidarticulonombre').val(data.nombre);
                             $('#pidproveedor').val(data.idpersona);
+                            $('#codigodelarticuloacargar').val(data.codigo)
                         }
 
                     },
@@ -260,6 +230,7 @@
                 data:{'prov':cat_prov, 'nombre':nombre_prov},
                 success:function(data){
                     $('#inputSuccess').val(data.nombre);
+                    $('#codigodelarticuloacargar').val(data.codigo);
                     $('#pidarticuloidarticulo').val(data.idarticulo);
                     $('#pidarticulonombre').val(data.nombre);
                     $('#textoAgregarArticuloCuidado').css('display','none');
@@ -365,8 +336,7 @@
 
     }
 
-    function evaluar()
-    {
+    function evaluar(){
         if(total>0){
             $('#guardar').show();
         }
@@ -377,10 +347,10 @@
     
     function agregar() {
         datosArticulo = document.getElementById('pidarticuloidarticulo').value.split('_');
-
         idarticulo=datosArticulo[0];
         //articulo = $('#pidarticulo option:selected').val();
         articulo = $('#pidarticulonombre').val();
+        codigo = $('#codigodelarticuloacargar').val();
         cantidad = $('#pcantidad').val();
         precio_compra_costo = $('#pprecio_compra_costo').val();
         porcentaje_venta = $('#pporcentaje_venta').val();
@@ -388,7 +358,14 @@
         if(idarticulo!='' && cantidad!='' && cantidad>0 && precio_compra_costo!='' && porcentaje_venta!=''){
             subtotal[cont] = (cantidad*precio_compra_costo);
             total = total+subtotal[cont];
-            var fila = '<tr class="selected" id="fila'+cont+'"><td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" value="'+cantidad+'" readonly></td><td><input type="number" name="precio_compra_costo[]" value="'+precio_compra_costo+'" readonly></td><td><input type="number" name="porcentaje_venta[]" value="'+porcentaje_venta+'" readonly></td><td>'+subtotal[cont]+'</td></tr>';
+            var fila = '<tr class="selected" id="fila'+cont+'">' +
+                '<td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+');">X</button></td>' +
+                '<td><input type="hidden" name="codigoarticulo[]" value="'+codigo+'">'+codigo+'</td>' +
+                '<td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td>' +
+                '<td><input type="number" name="cantidad[]" value="'+cantidad+'" readonly></td>' +
+                '<td><input type="number" name="precio_compra_costo[]" value="'+precio_compra_costo+'" readonly></td>' +
+                '<td><input type="number" name="porcentaje_venta[]" value="'+porcentaje_venta+'" readonly></td>' +
+                '<td>'+subtotal[cont]+'</td></tr>';
             cont++;
             limpiar();
             $('#total').html('$' + total);
@@ -400,6 +377,7 @@
         }
         $('#textoAgregarArticuloOk').css('display','none');
         $('#textoAgregarArticuloCargadoPerfecto').css('display','none');
+        $('#codigodelarticuloacargar').val('');
         $('#inputSuccess').focus();
 //        $("#pidarticulo")[0].selectedIndex = 0;
     }

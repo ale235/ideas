@@ -53,9 +53,9 @@ class IngresoController extends Controller
     public function store(IngresoFormRequest $request)
     {
 
-        try
-        {
-            DB::beginTransaction();
+//        try
+//        {
+//            DB::beginTransaction();
             $ingreso = new Ingreso;
             $ingreso->idproveedor = $request->get('pidproveedor');
             $ingreso->tipo_comprobante=$request->get('tipo_comprobante');
@@ -98,12 +98,12 @@ class IngresoController extends Controller
 
                 $cont= $cont+1;
             }
-            DB::commit();
-        }
-        catch(\Exception $e)
-        {
-            DB::rollback();
-        }
+//            DB::commit();
+//        }
+//        catch(\Exception $e)
+//        {
+//            DB::rollback();
+//        }
 
         return Redirect::to('compras/ingreso/create');
     }
@@ -246,7 +246,7 @@ class IngresoController extends Controller
         //if our chosen id and products table prod_cat_id col match the get first 100 data
         //$request->id here is the id of our chosen option id
         $articulo = DB::table('articulo as art')
-            ->select('art.nombre','p.idpersona','art.idarticulo')
+            ->select('art.nombre','p.idpersona','art.idarticulo', 'art.codigo')
             ->join('persona as p','p.codigo','=','art.proveedor')
             ->where('art.codigo','=',$request->codigo)->first();
 
@@ -264,13 +264,15 @@ class IngresoController extends Controller
     }
 
     public function agregarArticuloParaIngreso (Request $request) {
-        $numero = Articulo::where('proveedor',$request->get('prov'))->count();
+        $numero = Articulo::where('proveedor',$request->get('prov'))->orderBy('codigo','desc')->first();
+        $ultimoNumeroCodigo = substr($numero->codigo, -5);
+        $ultimoNumeroCodigo = (int)$ultimoNumeroCodigo;
 
             try{
                 DB::beginTransaction();
                 $articulo = new Articulo;
                 $articulo->idcategoria = 1;
-                $articulo->codigo = $request->get('prov'). str_pad($numero, 5, "0",  STR_PAD_LEFT);
+                $articulo->codigo = $request->get('prov'). str_pad($ultimoNumeroCodigo+1, 5, "0",  STR_PAD_LEFT);
                 $articulo->proveedor = $request->get('prov');
                 $articulo->nombre = $request->get('nombre');
                 $articulo->stock = 0;
