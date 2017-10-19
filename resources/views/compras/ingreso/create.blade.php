@@ -49,9 +49,33 @@
                                 <label class="control-label" for="inputSuccess">
                                     <i class="fa fa-check"></i> Nombre del artículo
                                 </label>
-                                <div class="input-group">
+                                <div class="form-group">
                                     <input type="text" class="form-control" id="inputSuccess" placeholder="Nombre del artículo" disabled>
-                                    <span id="bt_add_product" class="input-group-addon btn" disabled>Agregar Producto</span>
+                                    <button type="button" id="botonmodal" class="btn btn-warning" data-toggle="modal" data-target="#modal-default" style="display: none">
+                                       Agregar Producto
+                                    </button>
+                                    {{--<span id="bt_add_product" class="input-group-addon btn" disabled>Agregar Producto</span>--}}
+                                </div>
+
+                                <div class="modal fade" id="modal-default">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title">Atención</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>¿Está seguro que desea agregar este producto?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+                                                <button id="bt_add_product" type="button" class="btn btn-primary" data-dismiss="modal">Sì</button>
+                                            </div>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
                                 </div>
                             </div>
                                 <div class="form-group">
@@ -171,10 +195,12 @@
                         $('#textoAgregarArticuloCuidado').css('display','block');
                         $('#pidarticuloidarticulo').val('');
                         $('#textoAgregarArticuloOk').css('display','none');
-                        $('#bt_add_product').attr('disabled',false);
+                        //$('#bt_add_product').attr('disabled',false);
+                        $('#botonmodal').css('display','block');
                     }else{
                         $('#textoAgregarArticuloCuidado').css('display','none');
-                        $('#bt_add_product').attr('disabled',true);
+                        //$('#bt_add_product').attr('disabled',true);
+                        $('#botonmodal').css('display','none');
                     }
 
                     var nombres = data.map(function (item) {
@@ -238,6 +264,7 @@
                     $('#pidarticulonombre').val(data.nombre);
                     $('#textoAgregarArticuloCuidado').css('display','none');
                     $('#textoAgregarArticuloCargadoPerfecto').css('display','block');
+                    $('#botonmodal').css('display','none');
 
                 },
                 error:function(){
@@ -382,6 +409,7 @@
         $('#textoAgregarArticuloCargadoPerfecto').css('display','none');
         $('#codigodelarticuloacargar').val('');
         $('#inputSuccess').focus();
+        $('#pidarticuloidarticulo').val('');
 //        $("#pidarticulo")[0].selectedIndex = 0;
     }
 

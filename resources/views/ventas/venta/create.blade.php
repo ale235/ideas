@@ -492,6 +492,8 @@
         else{
             alert("error al ingresar uun detalle de la venta, revise los datos del articulo");
         }
+
+        $('#pidarticulo').focus();
     }
 
     function eliminar(index) {
