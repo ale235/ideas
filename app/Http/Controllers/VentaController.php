@@ -484,6 +484,7 @@ class VentaController extends Controller
         $cont2 = 1;
         $total = 0;
         $totalPromedioTentativo = 0;
+        $cantidadDeProductos = 0;
         $fila0 = [];
         $fila0[0] = 'Nombre';
         $fila0[1] = 'Codigo';
@@ -502,19 +503,20 @@ class VentaController extends Controller
             $fila[2] =$a->precio_venta;
             $fila[3] =$a->cantidad;
             $fila[4] =$a->precio_total;
-            $fila[5] =$a->precio_total/2;
+            $fila[5] =$a->precio_total/$a->cantidad;
             $fila[6] =$a->fecha_hora;
             $total = $total + $fila[4];
             $totalPromedioTentativo = $totalPromedioTentativo + $fila[5];
+            $cantidadDeProductos = $cantidadDeProductos + $fila[3];
             $columna[$cont2] = $fila;
             $cont2 = $cont2 + 1;
         }
 
-        Excel::create('Caja ' . $mytime->format('Y-m-d'), function ($excel) use ($columna,$total,$totalPromedioTentativo) {
+        Excel::create('Caja ' . $mytime->format('Y-m-d'), function ($excel) use ($columna,$total,$totalPromedioTentativo, $cantidadDeProductos) {
 
-            $excel->sheet('Excel sheet', function ($sheet) use ($columna,$total,$totalPromedioTentativo) {
+            $excel->sheet('Excel sheet', function ($sheet) use ($columna,$total,$totalPromedioTentativo, $cantidadDeProductos) {
                 $row = 1;
-                $sheet->row($row, ['Nombre', 'Codigo', 'Precio venta', 'Cantidad', 'Precio total','Promedio Tentativo', 'Fecha']);
+                $sheet->row($row, ['Nombre', 'Codigo', 'Precio venta', 'Cantidad', 'Precio total','Promedio', 'Fecha']);
 //                $sheet->fromArray($columna, null, 'A1', false, false);
                 $i = 1;
                 while(count($columna)> $i) {
@@ -526,6 +528,7 @@ class VentaController extends Controller
                 $row = $row + 2;
                 $sheet->row($row+1, ['Total',$total]);
                 $sheet->row($row+2, ['Total Promedio',$totalPromedioTentativo]);
+                $sheet->row($row+3, ['Cantidad Productos Vendidos',$cantidadDeProductos]);
             });
 
         })->download('xls');
