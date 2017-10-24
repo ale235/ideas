@@ -220,12 +220,7 @@
                     url:'{!!URL::to('buscarPrecioArticuloIngresosPorCodigo')!!}',
                     data:{'codigo':input[0]},
                     success:function(data){
-                        //console.log('success');
-                        if(jQuery.isEmptyObject(data)){
-                            $('#pidarticulo').val("");
-                            alert('NO')
-                        }
-                        else if($('#pidproveedor').val() != "" && $('#pidproveedor').val() != data.idpersona){
+                        if($('#pidproveedor').val() != "" && $('#pidproveedor').val() != data.idpersona){
                             $('#pidarticulo').val("");
                             alert('El artículo no pertenece al primer proveedor cargado')
                         } else{

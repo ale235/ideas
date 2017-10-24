@@ -101,6 +101,9 @@
                 <li class="treeview">
                     <a href="{{ url('almacen/articulo?selectText=Activo') }}"><i class='fa fa-folder-open'></i> <span>Artículos</span> <i class="fa fa-angle-left pull-right"></i></a>
                 </li>
+                <li class="treeview">
+                    <a href="{{ url('compras/ingreso') }}"><i class='fa fa-folder-open'></i> <span>Ùltimos Artículos</span> <i class="fa fa-angle-left pull-right"></i></a>
+                </li>
                 {{--<li class="treeview">--}}
                     {{--<a href="#"><i class='fa fa-folder-open'></i> <span>Almacén</span> <i class="fa fa-angle-left pull-right"></i></a>--}}
                     {{--<ul class="treeview-menu">--}}

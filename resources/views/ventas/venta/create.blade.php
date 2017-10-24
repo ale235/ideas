@@ -40,7 +40,7 @@
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             <div class="input-group">
                 <label for="cantidad">Cantidad</label>
-                <input type="number" name="pcantidad" id="pcantidad" class="form-control" onkeyup="actualizar()"
+                <input type="number" name="pcantidad" id="pcantidad" class="form-control" onkeyup="actualizar()" onkeypress="return event.keyCode != 13;"
                        placeholder="Cantidad">
             </div>
         </div>
@@ -103,7 +103,7 @@
             <div class="from-group">
                 <label for="pventareal">Venta real</label>
                 <input type="number" name="pventa_real" id="pventa_real" class="form-control"
-                       placeholder="Venta Real">
+                       placeholder="Venta Real" onkeypress="return event.keyCode != 13;">
             </div>
         </div>
         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
@@ -292,6 +292,12 @@
             }
         });
         $('#pidarticulo').focus();
+
+        $(document).on("keypress", "#checkClienteInputs", function(event) {
+            if (event.which == '10' || event.which == '13') {
+                event.preventDefault();
+            }
+        });
 
         $(document).on('change','.lista-proveedores',function(){
             // console.log("hmm its change");

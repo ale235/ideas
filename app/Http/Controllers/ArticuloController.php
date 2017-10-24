@@ -43,7 +43,8 @@ class ArticuloController extends Controller
             else $query3 = trim($request->get('selectText'));
             $articulos = DB::table('articulo as art')
                 ->join('categoria as cat', 'art.idcategoria', '=', 'cat.idcategoria')
-//                ->join('precio as p', 'art.idarticulo', '=', 'p.idarticulo')
+                ->join('detalle_ingreso as di', 'art.idarticulo', '=', 'di.idarticulo')
+                ->join('ingreso as i', 'i.idingreso', '=', 'di.idingreso')
                 ->select('art.idarticulo','art.nombre', 'art.codigo', 'art.stock', 'cat.nombre as categoria', 'art.descripcion', 'art.imagen', 'art.estado', 'art.proveedor','art.ultimoprecio')
                 ->where('art.estado','=',$query3)
                 ->where([
@@ -52,7 +53,8 @@ class ArticuloController extends Controller
                     ['art.proveedor','LIKE','%'.$query4.'%'],
                     ['art.estado', '=', $query3],
                 ])
-                ->orderBy('art.idarticulo','desc')
+                ->orderBy('i.fecha_hora','desc')
+                ->groupBy('art.idarticulo','art.nombre', 'art.codigo', 'art.stock', 'cat.nombre', 'art.descripcion', 'art.imagen', 'art.estado', 'art.proveedor','art.ultimoprecio')
 //                ->orderBy('p.idprecio','desc')
                 ->paginate('30');
 

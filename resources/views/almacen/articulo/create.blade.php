@@ -110,6 +110,12 @@
 
     $(document).ready(function () {
 
+        $(document).on("keypress", "#codigo, #nombre, #pcantidad, #pprecio_compra_costo, #pporcentaje_venta", function(event) {
+            if (event.which == '10' || event.which == '13') {
+                event.preventDefault();
+            }
+        });
+
 
         $('#idproveedores option[value="'+$('#idproveedor').val()+'"]').attr('selected', 'selected');
 

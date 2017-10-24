@@ -240,10 +240,35 @@ class VentaController extends Controller
 
     public function destroy($id)
     {
-        $venta = Venta::findOrFail($id);
-        $venta->estado = 'Cancelado';
-        $venta->update();
+//        $venta = Venta::findOrFail($id);
+//        $venta->estado = 'Cancelado';
+//        $venta->update();
+
+
+        try{
+            DB::beginTransaction();
+            $venta = Venta::findOrFail($id);
+            $fecha = new Carbon($venta->fecha_hora);
+            $detalle_venta= DetalleVenta::where('idventa',$id)->get();
+            foreach ($detalle_venta as $di){
+                $precios = Precio::where('fecha', $fecha->format('Y-m-d'))->where('idarticulo', $di->idarticulo)->get();
+                foreach ($precios as $p){
+                    $p->delete();
+                }
+
+                $di->delete();
+            }
+
+            $venta->delete();
+            DB::commit();
+        }
+        catch(\Exception $e)
+        {
+            DB::rollback();
+        }
+
         return Redirect::to('ventas/venta');
+
     }
 
     public function buscarArticuloPorProveedor(Request $request)
