@@ -43,8 +43,8 @@ class ArticuloController extends Controller
             else $query3 = trim($request->get('selectText'));
             $articulos = DB::table('articulo as art')
                 ->join('categoria as cat', 'art.idcategoria', '=', 'cat.idcategoria')
-                ->join('detalle_ingreso as di', 'art.idarticulo', '=', 'di.idarticulo')
-                ->join('ingreso as i', 'i.idingreso', '=', 'di.idingreso')
+//               ->join('detalle_ingreso as di', 'art.idarticulo', '=', 'di.idarticulo')
+//                ->join('ingreso as i', 'i.idingreso', '=', 'di.idingreso')
                 ->select('art.idarticulo','art.nombre', 'art.codigo', 'art.stock', 'cat.nombre as categoria', 'art.descripcion', 'art.imagen', 'art.estado', 'art.proveedor','art.ultimoprecio')
                 ->where('art.estado','=',$query3)
                 ->where([
@@ -53,9 +53,9 @@ class ArticuloController extends Controller
                     ['art.proveedor','LIKE','%'.$query4.'%'],
                     ['art.estado', '=', $query3],
                 ])
-                ->orderBy('i.fecha_hora','desc')
-                ->groupBy('art.idarticulo','art.nombre', 'art.codigo', 'art.stock', 'cat.nombre', 'art.descripcion', 'art.imagen', 'art.estado', 'art.proveedor','art.ultimoprecio')
-//                ->orderBy('p.idprecio','desc')
+//                ->orderBy('i.fecha_hora','desc')
+//                ->groupBy('art.idarticulo','art.nombre', 'art.codigo', 'art.stock', 'cat.nombre', 'art.descripcion', 'art.imagen', 'art.estado', 'art.proveedor','art.ultimoprecio')
+                ->orderBy('art.idarticulo','desc')
                 ->paginate('30');
 
             return view('almacen.articulo.index', ['articulos'=>$articulos,'searchText'=>$query, 'searchText2'=>$query2, 'estados'=>$estados, 'selectText'=>$query3, 'categorias'=>$categorias, 'searchText3'=>$query4]);

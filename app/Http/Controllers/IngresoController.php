@@ -246,16 +246,24 @@ class IngresoController extends Controller
         //if our chosen id and products table prod_cat_id col match the get first 100 data
         //$request->id here is the id of our chosen option id
         $precio = DB::table('precio as p')
-                        ->join('articulo as art','p.idarticulo','=','art.idariculo')
-                        ->join('articulo as art',$request->codigo,'=','art.codigo')
-                        ->first();
+                        ->join('articulo as art','p.idarticulo','=','art.idarticulo')
+                        ->where('art.codigo','=',$request->codigo)
+                        ->count();
 
-        $articulo = DB::table('articulo as art')
-            ->select('art.nombre','p.idpersona','art.idarticulo','pre.precio_compra','pre.precio_venta','pre.porcentaje','art.codigo')
-            ->join('persona as p','p.codigo','=','art.proveedor')
-            ->join('precio as pre','art.idarticulo','pre.idarticulo')
-            ->orderBy('pre.idprecio','desc')
-            ->where('art.codigo','=',$request->codigo)->first();
+        if($precio != 0){
+            $articulo = DB::table('articulo as art')
+                ->select('art.nombre','p.idpersona','art.idarticulo','pre.precio_compra','pre.precio_venta','pre.porcentaje','art.codigo')
+                ->join('persona as p','p.codigo','=','art.proveedor')
+                ->join('precio as pre','art.idarticulo','pre.idarticulo')
+                ->orderBy('pre.idprecio','desc')
+                ->where('art.codigo','=',$request->codigo)->first();
+        }
+        else{
+            $articulo = DB::table('articulo as art')
+                ->join('persona as p','p.codigo','=','art.proveedor')
+                ->select('art.nombre','p.idpersona','art.idarticulo','art.codigo')
+                ->where('art.codigo','=',$request->codigo)->first();
+        }
 
         return response()->json($articulo);//then sent this data to ajax success
     }
@@ -306,10 +314,17 @@ class IngresoController extends Controller
     public function autocompleteIngresoPorProveedor(Request $request)
     {
         $data = Articulo::select('nombre','codigo','idarticulo','ultimoprecio')
-            ->where('nombre','LIKE','%'.$request->get('query').'%')
-            ->orwhere('codigo','LIKE','%'.$request->get('query').'%')
-            ->where('estado','=','Activo')
-            ->where('proveedor','=',$request->get('prov'))
+            ->where([
+                ['nombre','LIKE','%'.$request->get('query').'%'],
+                ['proveedor','=',$request->get('prov')],
+                ['estado','=','Activo']
+            ])
+            ->orwhere([
+                [ 'codigo','LIKE','%'.$request->get('query').'%'],
+                ['proveedor','=',$request->get('prov')],
+                ['estado','=','Activo']
+            ])
+
             ->get();
         return response()->json($data);
     }

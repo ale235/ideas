@@ -7,16 +7,17 @@
         </h3>
         {{--<a href="venta/create"><button class="btn btn-success pull-left">Nueva Venta</button></a>--}}
         @if (Auth::user()->role == 1)
-        <a href="{{URL::action('VentaController@exportResultado',$date)}}"><button class="btn btn-success pull-right">Exportar Resultado <i class="fa fa-file-excel-o"></i></button></a>
-        <a href="{{URL::action('VentaController@exportDetalle',$date)}}"><button class="btn btn-success pull-right">Exportar Resultado con Detalle<i class="fa fa-file-excel-o"></i></button></a>
-        <a href="{{URL::action('VentaController@cajaDelDia')}}"><button class="btn btn-success pull-right">Caja del día<i class="fa fa-file-excel-o"></i></button></a>
-        <a href="{{URL::action('VentaController@productoMasVendido',$date)}}"><button class="btn btn-success pull-right">Producto más vendido<i class="fa fa-file-excel-o"></i></button></a>
-        <a href="{{URL::action('VentaController@proveedorQueMasVende',$date)}}"><button class="btn btn-success pull-right">Proveedor que más vende<i class="fa fa-file-excel-o"></i></button></a>
+        <a href="{{URL::action('VentaController@exportResultado',$date)}}"><button class="btn btn-success">Exportar Resultado <i class="fa fa-file-excel-o"></i></button></a>
+        <a href="{{URL::action('VentaController@exportDetalle',$date)}}"><button class="btn btn-success">Exportar Resultado con Detalle<i class="fa fa-file-excel-o"></i></button></a>
+        <a href="{{URL::action('VentaController@cajaDelDia')}}"><button class="btn btn-success">Caja del día de hoy<i class="fa fa-file-excel-o"></i></button></a>
+        <a href="{{URL::action('VentaController@productoMasVendido',$date)}}"><button class="btn btn-success">Producto más vendido<i class="fa fa-file-excel-o"></i></button></a>
+        <a href="{{URL::action('VentaController@proveedorQueMasVende',$date)}}"><button class="btn btn-success">Proveedor que más vende<i class="fa fa-file-excel-o"></i></button></a>
 
 
         @endif
-        @include('ventas.venta.search')
+
     </div>
+    @include('ventas.venta.search')
 </div>
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
