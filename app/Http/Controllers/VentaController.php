@@ -57,8 +57,8 @@ class VentaController extends Controller
                     ->join('persona as p', 'v.idcliente', '=', 'p.idpersona')
                     ->join('detalle_venta as dv', 'v.idventa', '=', 'dv.idventa')
                     ->select('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta','v.total_venta_real')
-                    ->whereBetween('v.fecha_hora', array(new Carbon($pieces[0]), new Carbon($pieces[1])))
-                    ->orderBy('v.idventa', 'desc')
+                    ->whereBetween('v.fecha_hora',[$pieces[0],$pieces[1]])
+                    ->orderBy('v.fecha_hora', 'desc')
                     ->groupBy('v.idventa', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.serie_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta','v.total_venta_real')
                     ->paginate(20);
             }
@@ -350,18 +350,7 @@ class VentaController extends Controller
     {
 
         if ($date != null && $date != '' && strtotime($date)) {
-            $mytime = Carbon::now('America/Argentina/Buenos_Aires');
-
-            $aux = DB::table('articulo as a')
-                ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
-                ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
-                ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', DB::raw('SUM(dv.cantidad) AS cantidad'), DB::raw('SUM(dv.precio_venta*dv.cantidad) AS precio_total'))
-                ->whereDay('fecha_hora',$mytime->day)
-                ->whereMonth('fecha_hora',$mytime->month)
-                ->whereYear('fecha_hora',$mytime->year)
-                ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora')
-                ->orderBy('v.fecha_hora', 'desc')
-                ->get();
+            $this->cajaDelDia($request);
 
 
         } else {
@@ -382,36 +371,42 @@ class VentaController extends Controller
         $cont2 = 1;
         $total = 0;
         $totalPromedioTentativo = 0;
+        $cantidadDeProductos = 0;
         $fila0 = [];
         $fila0[0] = 'Nombre';
         $fila0[1] = 'Precio Venta';
         $fila0[2] = 'Cantidad';
         $fila0[3] = 'Precio total';
-        $fila0[4] = 'Promedio Tentativo';
+        $fila0[4] = 'Promedio';
         $fila0[5] = 'Fecha';
         $columna[0] = $fila0;
 
         foreach ($aux as $a) {
-            $fila = [];
+            if($a->cantidad>0){
+                $fila = [];
 
-            $fila[0] = $a->nombre;
-            $fila[1] = $a->precio_venta;
-            $fila[2] = $a->cantidad;
-            $fila[3] = $a->precio_total;
-            $fila[4] = $a->precio_total / 2;
-            $fila[5] = $a->fecha_hora;
-            $total = $total + $fila[3];
-            $totalPromedioTentativo = $totalPromedioTentativo + $fila[4];
-            $columna[$cont2] = $fila;
-            $cont2 = $cont2 + 1;
+                $fila[0] = $a->nombre;
+                $fila[1] = $a->precio_venta;
+                $fila[2] = $a->cantidad;
+                $fila[3] = $a->precio_total;
+                $fila[4] = $a->precio_total /$a->cantidad;
+                $fila[5] = $a->fecha_hora;
+                $total = $total + $fila[3];
+                $totalPromedioTentativo = $totalPromedioTentativo + $fila[4];
+
+                $cantidadDeProductos = $cantidadDeProductos + $fila[2];
+                $columna[$cont2] = $fila;
+                $cont2 = $cont2 + 1;
+            }
+
         }
         $pieces = explode(" - ", $date);
-        Excel::create('Detalle entre: '.$pieces[0].' a '.$pieces[1], function ($excel) use ($columna,$total,$totalPromedioTentativo) {
+        Excel::create('Detalle entre: '.$pieces[0].' a '.$pieces[1], function ($excel) use ($columna,$total,$totalPromedioTentativo, $cantidadDeProductos) {
 
-            $excel->sheet('Excel sheet', function ($sheet) use ($columna,$total,$totalPromedioTentativo) {
+            $excel->sheet('Excel sheet', function ($sheet) use ($columna,$total,$totalPromedioTentativo, $cantidadDeProductos) {
 
                 $row = 1;
-                $sheet->row($row, ['Nombre', 'Precio venta', 'Cantidad', 'Precio total','Promedio Tentativo', 'Fecha']);
+                $sheet->row($row, ['Nombre', 'Precio venta', 'Cantidad', 'Precio total','Promedio', 'Fecha']);
 //                $sheet->fromArray($columna, null, 'A1', false, false);
                 $i = 1;
                 while(count($columna)> $i) {
@@ -423,7 +418,7 @@ class VentaController extends Controller
                 $row = $row + 2;
                 $sheet->row($row+1, ['Total',$total]);
                 $sheet->row($row+2, ['Total Promedio',$totalPromedioTentativo]);
-            });
+                $sheet->row($row+3, ['Cantidad Productos Vendidos',$cantidadDeProductos]);            });
 
         })->download('xls');
     }
@@ -516,7 +511,7 @@ class VentaController extends Controller
         $fila0[2] = 'Precio Venta';
         $fila0[3] = 'Cantidad';
         $fila0[4] = 'Precio total';
-        $fila0[5] = 'Promedio Tentativo';
+        $fila0[5] = 'Promedio';
         $fila0[6] = 'Fecha';
         $columna[0] = $fila0;
 
