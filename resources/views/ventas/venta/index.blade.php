@@ -47,7 +47,7 @@
             </table>
         </div>
         {{--{{$ventas->render()}}--}}
-        {{$ventas->appends(['daterange' => $date])->render()}}
+        {{$ventas->appends(['daterange' => $date])->render()}} 
         {{--{!! $articulos->appends(['selectText' => $selectText, 'searchText' => $searchText, 'searchText2' => $searchText2])->render() !!}--}}
     </div>
 </div>
