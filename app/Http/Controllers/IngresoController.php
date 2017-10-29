@@ -280,8 +280,11 @@ class IngresoController extends Controller
 
     public function agregarArticuloParaIngreso (Request $request) {
         $numero = Articulo::where('proveedor',$request->get('prov'))->orderBy('codigo','desc')->first();
-        $ultimoNumeroCodigo = substr($numero->codigo, -5);
-        $ultimoNumeroCodigo = (int)$ultimoNumeroCodigo;
+        if($numero){
+            $ultimoNumeroCodigo = substr($numero->codigo, -5);
+            $ultimoNumeroCodigo = (int)$ultimoNumeroCodigo;
+        }
+        else $ultimoNumeroCodigo = 0;
 
             try{
                 DB::beginTransaction();
