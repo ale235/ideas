@@ -39,6 +39,7 @@
             <div class="input-group">
                 <span class="input-group-addon">Código</span>
                 <input type="text" name="codigo" id="codigo" value="{{$articulo->codigo}}" class="form-control" placeholder="Código...">
+                <input type="hidden" name="codigooculto" id="codigooculto" value="{{$articulo->codigo}}" class="form-control" placeholder="Código...">
             </div>
             <br>
 
@@ -92,5 +93,25 @@
 
 @push ('scripts')
 <script>
+    $(document).on('change','#codigo',function(){
+        var cod = $('#codigo').val();
+        $.ajax({
+            type:'get',
+            url:'{!!URL::to('verificarCodigo')!!}',
+            data:{'codigo':cod},
+            success:function(data){
+                if(data.codigo != null){
+                    alert('El código ya existe')
+                    $('#codigo').val($('#codigooculto').val());
+                }else{
+                    $('#codigooculto').val($('#codigo').val())
+                }
+
+            },
+            error:function(){
+
+            }
+        });
+    });
 </script>
 @endpush

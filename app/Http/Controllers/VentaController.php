@@ -360,10 +360,10 @@ class VentaController extends Controller
             $aux = DB::table('articulo as a')
                 ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
                 ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
-                ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', DB::raw('SUM(dv.cantidad) AS cantidad'), DB::raw('SUM(dv.precio_venta*dv.cantidad) AS precio_total'))
+                ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', 'dv.cantidad', DB::raw('SUM(dv.precio_venta/dv.cantidad) AS precio_total'))
                 ->whereBetween('v.fecha_hora',[$pieces[0],$pieces[1]])
-                ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora')
-                ->orderBy('v.fecha_hora', 'desc')
+                ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora','dv.cantidad')
+                ->orderBy('dv.precio_venta', 'desc')
                 ->get();
         }
 
@@ -389,9 +389,9 @@ class VentaController extends Controller
                 $fila[1] = $a->precio_venta;
                 $fila[2] = $a->cantidad;
                 $fila[3] = $a->precio_total;
-                $fila[4] = $a->precio_total /$a->cantidad;
+                $fila[4] = $a->precio_total * $a->cantidad;
                 $fila[5] = $a->fecha_hora;
-                $total = $total + $fila[3];
+                $total = $total + $fila[4];
                 $totalPromedioTentativo = $totalPromedioTentativo + $fila[4];
 
                 $cantidadDeProductos = $cantidadDeProductos + $fila[2];
@@ -417,7 +417,7 @@ class VentaController extends Controller
                 }
                 $row = $row + 2;
                 $sheet->row($row+1, ['Total',$total]);
-                $sheet->row($row+2, ['Total Promedio',$total/$cantidadDeProductos]);
+                //$sheet->row($row+2, ['Total Promedio',$total]);
                 $sheet->row($row+3, ['Cantidad Productos Vendidos',$cantidadDeProductos]);            });
 
         })->download('xls');
