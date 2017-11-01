@@ -357,14 +357,60 @@ class VentaController extends Controller
             $pieces = explode(" - ", $date);
             $pieces[0]=$pieces[0] . ' 00:00:00';
             $pieces[1]=$pieces[1] . ' 23:59:00';
-            $aux = DB::table('articulo as a')
-                ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
-                ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
-                ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', 'dv.cantidad', DB::raw('SUM(dv.precio_venta/dv.cantidad) AS precio_total'))
-                ->whereBetween('v.fecha_hora',[$pieces[0],$pieces[1]])
-                ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora','dv.cantidad')
-                ->orderBy('dv.precio_venta', 'desc')
-                ->get();
+
+            $lafechachica = Carbon::parse($pieces[0]);//2017-08-11
+            $lafechagrande = Carbon::parse($pieces[1]);//2017-10-12
+            $pibot = Carbon::parse('2017-09-30 00:00:00');
+            if($lafechagrande->lt($pibot)){
+                $aux = DB::table('articulo as a')
+                    ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
+                    ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
+                    ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', 'dv.cantidad', DB::raw('SUM(dv.precio_venta/dv.cantidad) AS precio_total'))
+                    ->whereBetween('v.fecha_hora',[$pieces[0],$pieces[1]])
+                    ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora','dv.cantidad')
+                    ->orderBy('v.fecha_hora', 'desc')
+                    ->get();
+            }
+            else if($lafechachica->lt($pibot) && $lafechagrande->gt($pibot)){
+                $auxviejo = DB::table('articulo as a')
+                    ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
+                    ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
+                    ->select('a.nombre', 'dv.precio_venta as precio_total', 'v.fecha_hora', 'dv.cantidad', DB::raw('SUM(dv.precio_venta/dv.cantidad) AS precio_venta'))
+                    ->whereBetween('v.fecha_hora',[$pieces[0],'2017-09-30 23:59:00'])
+                    ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora','dv.cantidad')
+                    ->orderBy('v.fecha_hora', 'desc')
+                    ->get();
+
+                $auxnuevo = DB::table('articulo as a')
+                    ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
+                    ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
+                    ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', 'dv.cantidad', DB::raw('SUM(dv.precio_venta*dv.cantidad) AS precio_total'))
+                    ->whereBetween('v.fecha_hora',['2017-09-30 23:59:00',$pieces[1]])
+                    ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora','dv.cantidad')
+                    ->orderBy('v.fecha_hora', 'desc')
+                    ->get();
+
+                $aux = $auxviejo->merge($auxnuevo);
+
+            } else {
+                $aux = DB::table('articulo as a')
+                    ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
+                    ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
+                    ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', 'dv.cantidad', DB::raw('SUM(dv.precio_venta*dv.cantidad) AS precio_total'))
+                    ->whereBetween('v.fecha_hora',[$pieces[0],$pieces[1]])
+                    ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora','dv.cantidad')
+                    ->orderBy('v.fecha_hora', 'desc')
+                    ->get();
+            }
+
+//            $aux = DB::table('articulo as a')
+//                ->join('detalle_venta as dv', 'dv.idarticulo', '=', 'a.idarticulo')
+//                ->join('venta as v', 'v.idventa', '=', 'dv.idventa')
+//                ->select('a.nombre', 'dv.precio_venta', 'v.fecha_hora', 'dv.cantidad', DB::raw('SUM(dv.precio_venta/dv.cantidad) AS precio_total'))
+//                ->whereBetween('v.fecha_hora',[$pieces[0],$pieces[1]])
+//                ->groupBy('a.nombre', 'dv.precio_venta', 'v.fecha_hora','dv.cantidad')
+//                ->orderBy('dv.precio_venta', 'desc')
+//                ->get();
         }
 
         $columna = [];
@@ -381,25 +427,88 @@ class VentaController extends Controller
         $fila0[5] = 'Fecha';
         $columna[0] = $fila0;
 
-        foreach ($aux as $a) {
-            if($a->cantidad>0){
-                $fila = [];
+        if($lafechagrande->lt($pibot)){
+            foreach ($aux as $a) {
+                if($a->cantidad>0){
+                    $fila = [];
 
-                $fila[0] = $a->nombre;
-                $fila[1] = $a->precio_venta;
-                $fila[2] = $a->cantidad;
-                $fila[3] = $a->precio_total;
-                $fila[4] = $a->precio_total * $a->cantidad;
-                $fila[5] = $a->fecha_hora;
-                $total = $total + $fila[4];
-                $totalPromedioTentativo = $totalPromedioTentativo + $fila[4];
+                    $fila[0] = $a->nombre;
+                    $fila[1] = $a->precio_venta;
+                    $fila[2] = $a->cantidad;
+                    $fila[3] = $a->precio_total;
+                    $fila[4] = $a->precio_total * $a->cantidad;
+                    $fila[5] = $a->fecha_hora;
+                    $total = $total + $fila[4];
+                    $totalPromedioTentativo = $totalPromedioTentativo + $fila[4];
 
-                $cantidadDeProductos = $cantidadDeProductos + $fila[2];
-                $columna[$cont2] = $fila;
-                $cont2 = $cont2 + 1;
+                    $cantidadDeProductos = $cantidadDeProductos + $fila[2];
+                    $columna[$cont2] = $fila;
+                    $cont2 = $cont2 + 1;
+                }
+
             }
-
         }
+        else if($lafechachica->lt($pibot) && $lafechagrande->gt($pibot)){
+            foreach ($aux as $a) {
+                if($a->cantidad>0){
+                    $fila = [];
+
+                    $fila[0] = $a->nombre;
+                    $fila[1] = $a->precio_venta;
+                    $fila[2] = $a->cantidad;
+                    $fila[3] = $a->precio_total;
+                    $fila[4] = $a->precio_total / $a->cantidad;
+                    $fila[5] = $a->fecha_hora;
+                    $total = $total + $fila[3];
+                    $totalPromedioTentativo = $totalPromedioTentativo + $fila[4];
+
+                    $cantidadDeProductos = $cantidadDeProductos + $fila[2];
+                    $columna[$cont2] = $fila;
+                    $cont2 = $cont2 + 1;
+                }
+
+            }
+        } else {
+            foreach ($aux as $a) {
+                if($a->cantidad>0){
+                    $fila = [];
+
+                    $fila[0] = $a->nombre;
+                    $fila[1] = $a->precio_venta;
+                    $fila[2] = $a->cantidad;
+                    $fila[3] = $a->precio_total;
+                    $fila[4] = $a->precio_total / $a->cantidad;
+                    $fila[5] = $a->fecha_hora;
+                    $total = $total + $fila[3];
+                    $totalPromedioTentativo = $totalPromedioTentativo + $fila[4];
+
+                    $cantidadDeProductos = $cantidadDeProductos + $fila[2];
+                    $columna[$cont2] = $fila;
+                    $cont2 = $cont2 + 1;
+                }
+
+            }
+        }
+
+//        foreach ($aux as $a) {
+//            if($a->cantidad>0){
+//                $fila = [];
+//
+//                $fila[0] = $a->nombre;
+//                $fila[1] = $a->precio_venta;
+//                $fila[2] = $a->cantidad;
+//                $fila[3] = $a->precio_total;
+//                $fila[4] = $a->precio_total * $a->cantidad;
+//                $fila[5] = $a->fecha_hora;
+//                $total = $total + $fila[4];
+//                $totalPromedioTentativo = $totalPromedioTentativo + $fila[4];
+//
+//                $cantidadDeProductos = $cantidadDeProductos + $fila[2];
+//                $columna[$cont2] = $fila;
+//                $cont2 = $cont2 + 1;
+//            }
+//
+//        }
         $pieces = explode(" - ", $date);
         Excel::create('Detalle entre: '.$pieces[0].' a '.$pieces[1], function ($excel) use ($columna,$total,$totalPromedioTentativo, $cantidadDeProductos) {
 
@@ -421,6 +530,7 @@ class VentaController extends Controller
                 $sheet->row($row+3, ['Cantidad Productos Vendidos',$cantidadDeProductos]);            });
 
         })->download('xls');
+        //return $merged;
     }
 
     public function exportResultado(Request $request, $date)
