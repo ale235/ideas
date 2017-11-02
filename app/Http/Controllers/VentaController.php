@@ -607,6 +607,77 @@ class VentaController extends Controller
         })->download('xls');
     }
 
+    public function exportReducido(Request $request, $date)
+    {
+
+
+        //dd($date);
+        if (strtotime($date)) {
+            $this->cajaDelDia($request);
+        } else {
+            $pieces = explode(" - ", $date);
+            $pieces[0]=$pieces[0] . ' 00:00:00';
+            $pieces[1]=$pieces[1] . ' 23:59:00';
+            $aux = DB::table('venta')
+                ->select('fecha_hora','total_venta')
+                ->whereBetween('fecha_hora',[$pieces[0],$pieces[1]])
+                ->get(['fecha_hora'])
+                ->groupBy(function($date) {
+                    return Carbon::parse($date->fecha_hora)->format('y-m-d');
+                });
+        }
+
+        $columna = [];
+        $cont2 = 1;
+        $total = 0;
+        $totalCosto = 0;
+        $fila0 = [];
+        $fila0[0] = 'Fecha';
+        $fila0[1] = 'Total venta día';
+        $columna[0] = $fila0;
+
+        foreach ($aux as $a) {
+            $pieces = explode(" ", $a[0]->fecha_hora);
+            $fila = [];
+            $fila[0] = $pieces[0] ;
+            $fila[1] = 0;
+                foreach ($a as $b){
+
+                    $fila[1] = $fila[1] + $b->total_venta;
+                }
+
+            //$fila[1] = $fila[1] +  $a->total_venta;
+            $total = $total + $fila[1];
+            $columna[$cont2] = $fila;
+            $cont2 = $cont2 + 1;
+        }
+
+        $pieces = explode(" - ", $date);
+        Excel::create('Resultado entre: '.$pieces[0].' a '.$pieces[1], function ($excel) use ($columna,$total,$totalCosto) {
+
+            $excel->sheet('Excel sheet', function ($sheet) use ($columna,$total,$totalCosto) {
+
+                $sheet->row(1, ['Fecha', 'Total Venta del Día']);
+                $sheet->fromArray($columna, null, 'A1', false, false);
+
+                $row = 1;
+                $sheet->row($row, ['Fecha','Total Venta Dia']);
+//                $sheet->fromArray($columna, null, 'A1', false, false);
+                $i = 1;
+                while(count($columna)> $i) {
+                    $row++;
+                    $sheet->row($row, $columna[$i]);
+                    $i++;
+
+                }
+                $row = $row + 2;
+                $sheet->row($row+1, ['Total Venta',$total]);
+
+            });
+
+        })->download('xls');
+    }
+
     public function cajaDelDia(Request $request)
     {
 

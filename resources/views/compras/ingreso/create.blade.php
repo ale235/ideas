@@ -162,6 +162,17 @@
     </div>
 @push ('scripts')
 <script>
+    $(document).on("submit", "form", function(event){
+        $(window).unbind('beforeunload');
+    });
+
+    $(window).bind('beforeunload', function(eEvent) {
+        var count = $('#detalles tr').length;
+        if(count > 0)
+            eEvent.returnValue =  "Estás saliendo de la pàgina sin guardar los elementos que ingresaste. Hacé click en el boton Guardar, los precios se pierden si no lo hacés, pero los artículos quedan cargados.";
+            return eEvent.returnValue;
+    });
+
     $(document).ready(function () {
        $('#bt_add').click(function () {
            agregar();
@@ -430,5 +441,8 @@
     }
 
 </script>
+    <script language="JavaScript">
+
+    </script>
 @endpush
 @endsection
