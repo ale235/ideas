@@ -547,6 +547,7 @@ class VentaController extends Controller
                 ->join('persona as p', 'p.idpersona', '=', 'v.idcliente')
                 ->select('v.fecha_hora', 'p.nombre', 'v.total_venta','v.total_compra')
                 ->whereBetween('v.fecha_hora',[$pieces[0],$pieces[1]])
+                ->orderBy('v.fecha_hora','desc')
                 ->get();
         }
 
@@ -621,6 +622,7 @@ class VentaController extends Controller
             $aux = DB::table('venta')
                 ->select('fecha_hora','total_venta')
                 ->whereBetween('fecha_hora',[$pieces[0],$pieces[1]])
+                ->orderBy('fecha_hora','desc')
                 ->get(['fecha_hora'])
                 ->groupBy(function($date) {
                     return Carbon::parse($date->fecha_hora)->format('y-m-d');
