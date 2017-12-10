@@ -56,7 +56,7 @@
                         @include('almacen.articulo.modal')
                     @endforeach
                 </table>
-                {!! $articulos->appends(['selectText' => $selectText, 'searchText' => $searchText, 'searchText2' => $searchText2])->render() !!}
+                {!! $articulos->appends(['selectText' => $selectText, 'searchText' => $searchText, 'searchText2' => $searchText2, 'searchText3' => $searchText3])->render() !!}
             </div>
         </div>
     </div>
