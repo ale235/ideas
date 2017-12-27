@@ -33,6 +33,7 @@
                 <span class="input-group-addon"><i class="fa fa-barcode"></i></span>
                 <input type="text" name="pidarticulo" id="pidarticulo" class="form-control typeahead"/>
             </div>
+            <label id="nombretemporal"></label>
             <input type="hidden" class="form-control" name="pidarticulonombre" id="pidarticulonombre"/>
             <input type="hidden" class="form-control" name="pidarticuloidarticulo" id="pidarticuloidarticulo"/>
         </div>
@@ -427,6 +428,8 @@
                         $('#pidarticulo').val(data.codigo);
                         $('#pidarticuloidarticulo').val(data.idarticulo);
                         $('#pidarticulonombre').val(data.nombre);
+
+                        $('#nombretemporal').text(data.nombre);
 
                     },
                     error:function(){
