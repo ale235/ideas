@@ -360,6 +360,8 @@
                     $('#pidarticuloidarticulo').val(data.idarticulo);
                     $('#pidarticulonombre').val(data.nombre);
 
+                    $('#nombretemporal').text(data.nombre);
+
                 },
                 error:function(){
 
@@ -501,6 +503,8 @@
         else{
             alert("error al ingresar uun detalle de la venta, revise los datos del articulo");
         }
+
+        $('#nombretemporal').text('');
 
         $('#pidarticulo').focus();
     }
