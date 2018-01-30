@@ -60,6 +60,7 @@ Route::get('/buscarProveedor','ArticuloController@buscarProveedor');
 Route::get('/exportDetalle/{daterange}','VentaController@exportDetalle');
 Route::get('/exportResultado/{daterange}','VentaController@exportResultado');
 Route::get('/cajaDelDia','VentaController@cajaDelDia');
+Route::get('/verstock','VentaController@verstock');
 Route::get('/exportReducido/{daterange}','VentaController@exportReducido');
 
 Route::get('/buscarArticuloPorProveedorEnIngreso','IngresoController@buscarArticuloPorProveedorEnIngreso');

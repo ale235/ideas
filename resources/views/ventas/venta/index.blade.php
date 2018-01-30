@@ -11,6 +11,7 @@
         <a href="{{URL::action('VentaController@exportDetalle',$date)}}"><button class="btn btn-success">Exportar Resultado con Detalle<i class="fa fa-file-excel-o"></i></button></a>
         <a href="{{URL::action('VentaController@exportReducido',$date)}}"><button class="btn btn-success">Exportar Resultado Reducido<i class="fa fa-file-excel-o"></i></button></a>
         <a href="{{URL::action('VentaController@cajaDelDia')}}"><button class="btn btn-success">Caja del día de hoy<i class="fa fa-file-excel-o"></i></button></a>
+        <a href="{{URL::action('VentaController@verstock')}}"><button class="btn btn-success">verstock<i class="fa fa-file-excel-o"></i></button></a>
         <a href="{{URL::action('VentaController@productoMasVendido',$date)}}"><button class="btn btn-success">Producto más vendido<i class="fa fa-file-excel-o"></i></button></a>
         <a href="{{URL::action('VentaController@proveedorQueMasVende',$date)}}"><button class="btn btn-success">Proveedor que más vende<i class="fa fa-file-excel-o"></i></button></a>
 

@@ -897,4 +897,49 @@ class VentaController extends Controller
             ->get();
         return response()->json($data);
     }
+
+    public function verstock(Request $request)
+    {
+
+
+        $mytime = Carbon::now('America/Argentina/Buenos_Aires');
+        $mytime2 = Carbon::now('America/Argentina/Buenos_Aires');
+        $mytime2->hour = 0;
+        $mytime2->minute = 0;
+        $mytime2->second = 0;
+        $yesterday = $mytime2->toDateTimeString();
+        $today = $mytime->toDateTimeString();
+
+        $stock = DB::table('articulo as a')
+            ->join('precio as p', 'p.idarticulo', '=', 'a.idarticulo')
+            ->where('a.stock','>=','1')
+            ->orderby('a.codigo','asc')
+            ->get();
+
+        $cont2 = 1;
+        $columna = [];
+        //dd($stock);
+        foreach ($stock as $a) {
+            $fila = [];
+
+            $fila[0] = $a->codigo;
+            $fila[1] = $a->nombre;
+            $fila[2] = $a->proveedor;
+            $fila[3] = $a->precio_compra;
+            $fila[4] = $a->precio_venta;
+            $columna[$cont2] = $fila;
+            $cont2 = $cont2 + 1;
+        }
+
+        Excel::create('Resultado entre: ', function ($excel) use ($columna) {
+
+            $excel->sheet('Excel sheet', function ($sheet) use ($columna) {
+
+                $sheet->row(1, ['Fecha', 'Cliente', 'Total Venta', 'Total Costo']);
+                $sheet->fromArray($columna, null, 'A1', false, false);
+
+            });
+
+        })->download('xls');
+    }
 }
