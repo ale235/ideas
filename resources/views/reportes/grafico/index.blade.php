@@ -21,7 +21,21 @@
     <section class="content">
         <!-- Small boxes (Stat box) -->
         <div class="row">
-            <div class="col-lg-4 col-xs-6">
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-red">
+                    <div class="inner">
+                        <h3><span id="stocknegativo"></span></h3>
+                        <p>Stock Negativo</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="{{URL::action('ReportesController@getDetalleStockNegativo')}}" class="small-box-footer">Más Información <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
                 <!-- small box -->
                 <div class="small-box bg-aqua">
                     <div class="inner">
@@ -32,11 +46,11 @@
                     <div class="icon">
                         <i class="ion ion-bag"></i>
                     </div>
-                    <a href="grafico/detallestock" class="small-box-footer">Más Información <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="{{URL::action('ReportesController@getDetalleStock')}}" class="small-box-footer">Más Información <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-4 col-xs-6">
+            <div class="col-lg-3 col-xs-6">
                 <!-- small box -->
                 <div class="small-box bg-green">
                     <div class="inner">
@@ -87,7 +101,7 @@
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-4 col-xs-6">
+            <div class="col-lg-3 col-xs-6">
                 <!-- small box -->
                 <div class="small-box bg-yellow">
                     <div class="inner">
@@ -125,6 +139,23 @@
             <!-- ./col -->
         </div>
         <!-- /.row -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Application buttons -->
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Reportes</h3>
+                    </div>
+                    <div class="box-body">
+                        <a href="{{URL::action('ReportesController@verstock')}}" class="btn btn-app">
+                            <i class="fa fa-barcode"></i> Exportar Stock
+                        </a>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
         <!-- Main row -->
         <div class="row">
             <div class="container col-lg-12 ">
@@ -470,6 +501,19 @@
             success: function (data) {
                 //console.log('success');
                 $("#sin_stock").text(data[0].cantidad);
+
+            },
+            error: function () {
+
+            }
+        });
+
+        $.ajax({
+            type: 'get',
+            url: '{!!URL::to('articulosStockNegativo')!!}',
+            success: function (data) {
+                //console.log('success');
+                $("#stocknegativo").text(data[0].cantidad);
 
             },
             error: function () {

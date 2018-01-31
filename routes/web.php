@@ -35,13 +35,17 @@ Route::get('/findPrice','ArticuloController@findPrice');
 Route::get('/exportArticulo/{selectText}','ArticuloController@exportArticulo');
 
 Route::get('/articulosSinStock','ReportesController@articulosSinStock');
+Route::get('/articulosStockNegativo','ReportesController@articulosStockNegativo');
 Route::get('/cajaDelDiaReportes','ReportesController@cajaDelDiaReportes');
 Route::get('/cajaDeAyer','ReportesController@cajaDeAyer');
 Route::get('/ventasPorProductos','ReportesController@ventasPorProductos');
 Route::get('/proveedorQueMasProductosVende','ReportesController@proveedorQueMasProductosVende');
 Route::get('/ganancias','ReportesController@ganancias');
 Route::get('/volveracero/{id}','ReportesController@volveracero');
+Route::get('/volveracerotodos','ReportesController@volveracerotodos');
 Route::get('/detalleganancias/{daterange}','ReportesController@detalleganancias');
+Route::get('/reportes/detallestock', 'ReportesController@getDetalleStock');
+Route::get('/reportes/detallestocknegativo', 'ReportesController@getDetalleStockNegativo');
 Route::get('/exportVentasPorProducto','ReportesController@exportVentasPorProducto');
 Route::get('/exportProveedorQueMasProductosVende','ReportesController@exportProveedorQueMasProductosVende');
 
@@ -60,7 +64,7 @@ Route::get('/buscarProveedor','ArticuloController@buscarProveedor');
 Route::get('/exportDetalle/{daterange}','VentaController@exportDetalle');
 Route::get('/exportResultado/{daterange}','VentaController@exportResultado');
 Route::get('/cajaDelDia','VentaController@cajaDelDia');
-Route::get('/verstock','VentaController@verstock');
+Route::get('/verstock','ReportesController@verstock');
 Route::get('/exportReducido/{daterange}','VentaController@exportReducido');
 
 Route::get('/buscarArticuloPorProveedorEnIngreso','IngresoController@buscarArticuloPorProveedorEnIngreso');

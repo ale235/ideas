@@ -80,11 +80,62 @@ class ReportesController extends Controller
 
         $collection = DB::table('articulo')
             ->select(DB::raw('COUNT(*) as cantidad'))
+            ->where('stock','=','0')
+            ->where('estado','=','Activo')
+            ->get();
+
+        return $collection;
+    }
+
+    public function getDetalleStock(Request $request) {
+        if($request){
+            $query = trim($request->get('searchText'));
+            $stock = DB::table('articulo')
+                ->where([
+                    ['codigo','LIKE','%'.$query.'%'],
+                    ['estado','=','Activo'],
+                    ['stock','=','0']])
+                ->orWhere([
+                    ['nombre','LIKE','%'.$query.'%'],
+                    ['estado','=','Activo'],
+                    ['stock','=','0']])
+                ->paginate(30);
+        }
+
+
+        return view('reportes.grafico.detallestock', ['stock'=> $stock,'searchText'=>$query]);
+    }
+
+    public function articulosStockNegativo()
+    {
+        //Articulo mçàs vendido
+
+        $collection = DB::table('articulo')
+            ->select(DB::raw('COUNT(*) as cantidad'))
             ->where('stock','<','0')
             ->where('estado','=','Activo')
             ->get();
 
         return $collection;
+    }
+
+    public function getDetalleStockNegativo(Request $request) {
+        if($request){
+            $query = trim($request->get('searchText'));
+            $stock = DB::table('articulo')
+                ->where([
+                    ['codigo','LIKE','%'.$query.'%'],
+                    ['estado','=','Activo'],
+                    ['stock','<','0']])
+                ->orwhere([
+                    ['nombre','LIKE','%'.$query.'%'],
+                    ['estado','=','Activo'],
+                    ['stock','<','0']])
+                ->paginate(30);
+        }
+
+
+        return view('reportes.grafico.detallestocknegativo', ['stock'=> $stock,'searchText'=>$query]);
     }
 
     public function cajaDelDiaReportes()
@@ -276,45 +327,21 @@ class ReportesController extends Controller
 
     public function show(Request $request)
     {
-
-        if ($request->get('daterange') == null || $request->get('daterange') == '') {
-            $venta = DB::table('venta')
-                ->orderBy('fecha_hora','desc')
-                ->paginate(30);
-//            ->select('fecha_hora', DB::raw('sum(total_venta) as total_venta'))
-//                ->whereBetween('fecha_hora',[$pieces[0],$pieces[1]]);
-        }else{
-            $date = $request->get('daterange');
-            $pieces = explode(" - ", $date);
-
-            $venta = DB::table('venta')
-//            ->select('fecha_hora', DB::raw('sum(total_venta) as total_venta'))
-                ->whereBetween('fecha_hora',[$pieces[0],$pieces[1]])
-                ->orderBy('fecha_hora','desc')
-                ->paginate(30);
-        }
-//        var_dump($request->get('daterange'));
-
-
-        $query = trim($request->get('searchText'));
-        $stock = DB::table('articulo')
-            ->where('stock','<=','0')
-            ->where('codigo','LIKE','%'.$query.'%')
-            ->where('estado','=','Activo')
-            ->paginate(30);
-
-
-        if($request->is('reportes/grafico/detallestock'))
-        return view('reportes.grafico.detallestock', ['stock'=> $stock,'searchText'=>$query]);
-        else    return view('reportes.grafico.detalleganancias', ['venta'=> $venta]);
-        //return view('home');
     }
 
-    public function volveracero($id){
-        $stock = Articulo::findOrFail($id);
-        $stock->stock = 0;
-        $stock->update();
-        return Redirect::to('reportes/grafico/detallestock');
+    public function volveracerotodos(){
+
+        try {
+            DB::beginTransaction();
+
+            DB::table('articulo')
+                ->where('stock','<',0)
+                ->update(['stock' => 0]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
+        return Redirect::to('reportes/detallestock');
     }
 
     public function ventasPorDias(Request $request)
@@ -356,6 +383,103 @@ class ReportesController extends Controller
             ->get();
 
         return $collection;
+    }
+
+    public function verstock(Request $request)
+    {
+
+
+        $mytime = Carbon::now('America/Argentina/Buenos_Aires');
+        $mytime2 = Carbon::now('America/Argentina/Buenos_Aires');
+        $mytime2->hour = 0;
+        $mytime2->minute = 0;
+        $mytime2->second = 0;
+        $yesterday = $mytime2->toDateTimeString();
+        $today = $mytime->toDateTimeString();
+
+        $stock = DB::table('articulo as a')
+            //->select('a.codigo','a.nombre','a.proveedor','p.precio_compra','p.precio_venta')
+            ->join('precio as p', 'p.idarticulo', '=', 'a.idarticulo')
+            ->where('a.stock','>=','1')
+            ->orderby('a.codigo','asc')
+            ->get();
+
+        $proveedores = DB::table('articulo as a')
+            ->select('a.proveedor')
+            ->where('a.stock','>=','1')
+            ->distinct()
+            ->orderby('a.codigo','asc')
+            ->get();
+
+        $cont2 = 1;
+        $columna = [];
+        $totalCosto = 0;
+        $totalVenta = 0;
+        //dd($stock);
+        foreach ($stock as $a) {
+            $fila = [];
+
+            $fila[0] = $a->codigo;
+            $fila[1] = $a->nombre;
+            $fila[2] = $a->proveedor;
+            $fila[3] = $a->precio_compra;
+            $fila[4] = $a->precio_venta;
+            $fila[5] = $a->stock;
+            $fila[6] = $a->stock * $a->precio_compra;
+            $fila[7] = $a->stock * $a->precio_venta;
+            $columna[$cont2] = $fila;
+            $cont2 = $cont2 + 1;
+            $totalCosto = $totalCosto + $fila[6];
+
+            $totalVenta = $totalVenta + $fila[7];
+        }
+//        usort($columna, function ($item1, $item2) {
+//            if ($item1[5] == $item2[5]) return 0;
+//            return $item1[5] < $item2[5] ? -1 : 1;
+//        });
+        $aux = array();
+        $final = array();
+        foreach ($columna as $arr)
+            if (!in_array($arr[0], $aux)){
+                $aux[] = $arr[0];
+                $final[] = $arr;
+            }
+
+        $filaVacia = [];
+        $filaVacia[0] = ' ';
+        $filaVacia[1] = ' ';
+        $filaVacia[2] = ' ';
+        $filaVacia[3] = ' ';
+        $filaVacia[4] = ' ';
+        $final[$cont2+2] = $filaVacia;
+
+        $filanueva = [];
+        $filanueva[0] = ' ';
+        $filanueva[1] = 'Sumatoria Costo: $' . $totalCosto;
+        $filanueva[2] = ' ';
+        $filanueva[3] = ' ';
+        $filanueva[4] = ' ';
+        $final[$cont2+3] = $filanueva;
+
+        $filanueva2 = [];
+        $filanueva2[0] = ' ';
+        $filanueva2[1] ='Sumatoria Ventas: $' . $totalVenta;
+        $filanueva2[2] = ' ';
+        $filanueva2[3] = ' ';
+        $filanueva2[4] = ' ';
+        $final[$cont2+4] = $filanueva2;
+
+        //dd($proveedores);
+        Excel::create('Resultado entre: ', function ($excel) use ($final,$proveedores,$totalCosto,$totalVenta) {
+
+            $excel->sheet('Excel sheet', function ($sheet) use ($final,$proveedores,$totalCosto,$totalVenta) {
+
+                $sheet->row(1, ['Codigo', 'Nombre', 'Proveedor','Costo/U','PdV/U','Cantidad','Costo Total','PdV Total']);
+                $sheet->fromArray($final, null, 'A2', false, false);
+
+            });
+
+        })->download('xls');
     }
 
 }
