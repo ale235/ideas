@@ -69,23 +69,10 @@
                                             <th></th>
                                             <th></th>
                                             <th></th>
-                                            <th style="color: black;">
-                                                <?php $a = 0; ?>
-                                                @foreach($detalle_venta_hoy as $vent)
-                                                        <?php $a = $a + ($vent->precio_venta * $vent->cantidad) ?>
-                                                @endforeach
-                                                    ${{$a}}
-                                            </th>
+
                                             </tfoot>
                                             <tbody>
-                                            @foreach($detalle_venta_hoy as $vent)
-                                                <tr>
-                                                    <td style="color: black;">{{$vent->nombre}}</td>
-                                                    <td style="color: black;">{{$vent->codigo}}</td>
-                                                    <td style="color: black;">{{$vent->cantidad}}</td>
-                                                    <td style="color: black;">{{$vent->precio_venta}}</td>
-                                                </tr>
-                                            @endforeach
+
                                             </tbody>
                                         </table>
                                     </div>

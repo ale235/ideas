@@ -911,13 +911,23 @@ class VentaController extends Controller
         $today = $mytime->toDateTimeString();
 
         $stock = DB::table('articulo as a')
+            //->select('a.codigo','a.nombre','a.proveedor','p.precio_compra','p.precio_venta')
             ->join('precio as p', 'p.idarticulo', '=', 'a.idarticulo')
             ->where('a.stock','>=','1')
             ->orderby('a.codigo','asc')
             ->get();
 
+        $proveedores = DB::table('articulo as a')
+            ->select('a.proveedor')
+            ->where('a.stock','>=','1')
+            ->distinct()
+            ->orderby('a.codigo','asc')
+            ->get();
+
         $cont2 = 1;
         $columna = [];
+        $totalCosto = 0;
+        $totalVenta = 0;
         //dd($stock);
         foreach ($stock as $a) {
             $fila = [];
@@ -929,14 +939,45 @@ class VentaController extends Controller
             $fila[4] = $a->precio_venta;
             $columna[$cont2] = $fila;
             $cont2 = $cont2 + 1;
+            $totalCosto = $totalCosto + $a->precio_compra;
+
+            $totalVenta = $totalVenta + $a->precio_venta;
         }
+//        usort($columna, function ($item1, $item2) {
+//            if ($item1[5] == $item2[5]) return 0;
+//            return $item1[5] < $item2[5] ? -1 : 1;
+//        });
+        $aux = array();
+        $final = array();
+        foreach ($columna as $arr)
+            if (!in_array($arr[0], $aux)){
+                $aux[] = $arr[0];
+                $final[] = $arr;
+            }
 
-        Excel::create('Resultado entre: ', function ($excel) use ($columna) {
+        $filanueva = [];
+        $filanueva[0] = ' ';
+        $filanueva[1] = 'Sumatoria Costo: $' . $totalCosto;
+        $filanueva[2] = ' ';
+        $filanueva[3] = ' ';
+        $filanueva[4] = ' ';
+        $final[$cont2+2] = $filanueva;
 
-            $excel->sheet('Excel sheet', function ($sheet) use ($columna) {
+        $filanueva2 = [];
+        $filanueva2[0] = ' ';
+        $filanueva2[1] ='Sumatoria Ventas: $' . $totalVenta;
+        $filanueva2[2] = ' ';
+        $filanueva2[3] = ' ';
+        $filanueva2[4] = ' ';
+        $final[$cont2+3] = $filanueva2;
 
-                $sheet->row(1, ['Fecha', 'Cliente', 'Total Venta', 'Total Costo']);
-                $sheet->fromArray($columna, null, 'A1', false, false);
+        //dd($proveedores);
+        Excel::create('Resultado entre: ', function ($excel) use ($final,$proveedores,$totalCosto,$totalVenta) {
+
+            $excel->sheet('Excel sheet', function ($sheet) use ($final,$proveedores,$totalCosto,$totalVenta) {
+
+                $sheet->row(1, ['Codigo', 'Nombre', 'Proveedor','Precio Compra','Precio Venta']);
+                $sheet->fromArray($final, null, 'A2', false, false);
 
             });
 
