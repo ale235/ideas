@@ -470,7 +470,7 @@ class ReportesController extends Controller
         $final[$cont2+4] = $filanueva2;
 
         //dd($proveedores);
-        Excel::create('Resultado entre: ', function ($excel) use ($final,$proveedores,$totalCosto,$totalVenta) {
+        Excel::create('Stock Total', function ($excel) use ($final,$proveedores,$totalCosto,$totalVenta) {
 
             $excel->sheet('Excel sheet', function ($sheet) use ($final,$proveedores,$totalCosto,$totalVenta) {
 

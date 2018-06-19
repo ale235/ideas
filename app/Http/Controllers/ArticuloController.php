@@ -40,7 +40,19 @@ class ArticuloController extends Controller
 
             if($request->get('selectText')== null ){
                 $query3 = 'Activo';
+                $query = ' ';
+                $query2 = ' ';
+                $query4 = ' ';
             }
+//            if($request->get('searchText')== null ){
+//                $query = ' ';
+//            }
+//            if($request->get('searchText2')== null ){
+//                $query2 = ' ';
+//            }
+//            if($request->get('searchText3')== null ){
+//                $query4 = ' ';
+//            }
             else $query3 = trim($request->get('selectText'));
             $articulos = DB::table('articulo as art')
                 ->join('categoria as cat', 'art.idcategoria', '=', 'cat.idcategoria')
@@ -261,14 +273,18 @@ class ArticuloController extends Controller
     }
 
 
-    public function exportArticulo($selectText)
+    public function exportArticulo($selectText,$searchText3)
     {
         //$articulos= Articulo::where('estado',$selectText)->get();
         $articulos= Articulo::join('precio','articulo.idarticulo', '=', 'precio.idarticulo')
             ->join('categoria','categoria.idcategoria','=','articulo.idcategoria')
 //            ->select('precio.idprecio','articulo.idarticulo','precio.fecha','precio.precio_venta','articulo.codigo','articulo.nombre','precio.porcentaje','precio.precio_compra')
-            ->select('articulo.nombre as articulo','articulo.codigo','articulo.stock','categoria.nombre','articulo.estado','precio.precio_venta','precio.fecha as último_precio','precio.porcentaje','precio.precio_compra')
-            ->where('articulo.estado',$selectText)
+            ->select('articulo.nombre as articulo','articulo.codigo','articulo.proveedor','articulo.stock','categoria.nombre','articulo.estado','precio.precio_venta','precio.fecha as último_precio','precio.porcentaje','precio.precio_compra')
+            ->where([
+                ['articulo.estado',$selectText],
+                ['articulo.proveedor',$searchText3]
+                    ]
+                )
             //->groupBy('precio.idprecio','articulo.idarticulo','precio.fecha','precio.precio_venta','articulo.codigo','articulo.nombre','precio.porcentaje','precio.precio_compra')
             ->orderBy('articulo.idarticulo','desc')
             ->orderBy('precio.idprecio','desc')

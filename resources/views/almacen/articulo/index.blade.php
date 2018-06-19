@@ -7,7 +7,8 @@
                 <span class="badge bg-green"></span>
                 <i class="fa fa-barcode"></i> Ingresar Producto
             </a>
-            <a href="{{URL::action('ArticuloController@exportArticulo',$selectText)}}" class="btn btn-app pull-right">
+            {{--<a href="{{ url('exportArticulo/'.$selectText. '/' . $searchText . '/' . $searchText2 . '/' . $searchText3 )}}" class="btn btn-app pull-right">--}}
+            <a href="{{URL::action('ArticuloController@exportArticulo',array($selectText,$searchText3))}}" id="lala" class="btn btn-app pull-right">
                 <span class="badge bg-green"></span>
                 <i class="fa fa-file-excel-o"></i> Exportar Resultado
             </a>
@@ -70,6 +71,14 @@
      function getURLParameter(name) {
          return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
      }
+
+     $(document).ready(function()
+     {
+         $( "#lala" ).click(function() {
+             //alert("hola");
+             $("#searchText3").val('');
+         });
+     });
 
 
 

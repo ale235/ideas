@@ -32,7 +32,7 @@ Route::get('/home', 'HomeController@index');
 Route::get('/prodview','ArticuloController@prodfunct');
 Route::get('/findProductName','ArticuloController@findProductName');
 Route::get('/findPrice','ArticuloController@findPrice');
-Route::get('/exportArticulo/{selectText}','ArticuloController@exportArticulo');
+Route::get('/exportArticulo/{selectText}/{searchText}','ArticuloController@exportArticulo');
 
 Route::get('/articulosSinStock','ReportesController@articulosSinStock');
 Route::get('/articulosStockNegativo','ReportesController@articulosStockNegativo');
