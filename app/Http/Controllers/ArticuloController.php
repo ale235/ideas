@@ -282,7 +282,7 @@ class ArticuloController extends Controller
             ->select('articulo.nombre as articulo','articulo.codigo','articulo.proveedor','articulo.stock','categoria.nombre','articulo.estado','precio.precio_venta','precio.fecha as último_precio','precio.porcentaje','precio.precio_compra')
             ->where([
                 ['articulo.estado',$selectText],
-                ['articulo.proveedor',$searchText3]
+                ['articulo.proveedor','LIKE','%'.$searchText3.'%']
                     ]
                 )
             //->groupBy('precio.idprecio','articulo.idarticulo','precio.fecha','precio.precio_venta','articulo.codigo','articulo.nombre','precio.porcentaje','precio.precio_compra')

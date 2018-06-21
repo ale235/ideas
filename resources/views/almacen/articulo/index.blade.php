@@ -74,9 +74,18 @@
 
      $(document).ready(function()
      {
+         if( ($("#searchText").val() == '') && ($("#searchText2").val() == '') && ($("#searchText3").val() == '')){
+             $("#lala").css('display', 'none');
+         }
+         else if(($("#searchText3").val() != '') && (($("#searchText").val() != '') || ($("#searchText2").val() != ''))){
+             $("#lala").css('display', 'none');
+         }
+         else {
+             $("#lala").css('display', 'block');
+         }
          $( "#lala" ).click(function() {
              //alert("hola");
-             $("#searchText3").val('');
+            // $("#searchText3").val('');
          });
      });
 

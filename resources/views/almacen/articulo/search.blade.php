@@ -14,7 +14,7 @@
         <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
-                <input type="text" class="form-control" name="searchText2" placeholder="Buscar..." value="{{$searchText2}}">
+                <input type="text" class="form-control" id="searchText2" name="searchText2" placeholder="Buscar..." value="{{$searchText2}}">
             </div>
         </div>
     </div>
@@ -23,7 +23,7 @@
         <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
-                <input type="text" class="form-control" name="searchText3" placeholder="Buscar..." value="{{$searchText3}}">
+                <input type="text" class="form-control" id="searchText3" name="searchText3" placeholder="Buscar..." value="{{$searchText3}}">
             </div>
         </div>
     </div>
